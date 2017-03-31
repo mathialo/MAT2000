@@ -1,4 +1,4 @@
-\chapter{Applications to face recognition}
+\chapter{Applications to Face Recognition}
 We will now shift our focus away from general compressive sensing, and look at how these techniques of sparse recovery can be used to build a framework for a complete face recognition system. 
 
 The face recognition problem is a classical one in the area of statistical learning and machine intelligence. Hence it is a broadly studied problem, with many proposed solutions. The classical way to do face recognition is to first do what is called feature extraction. One can think of feature extraction as a projection to a lower dimensional feature space, such that the requirements for memory and computational power is reduced. Popular methods for this includes Principal Component Analysis and Discrete Cosine Transform \cite{bhat2014performance}.
@@ -88,7 +88,7 @@ Summarizing all of the above, we get the algorithm described in \cref{alg:src}.
 \end{algorithm}
 
 
-\section{Addressing corruption and occlusion}
+\section{Addressing Corruption and Occlusion}
 A common problem when dealing with numerical problems of any sort is the introduction of round-off errors. A typical computer today uses 64 bit processors, this means that the processor (and all the other components) can store and process 64 binary digits of a number. Any real number must then be approximated by the closest number possible to write with 64 binary digits. Typically, this introduces a small error $ \epsilon_{i} < 2^{-53} \approx 10^{-16} $ for every pixel in the image. In addition to round-off errors, all image sensors introduce some image noise. 
 
 In addition to uniform noise, another problem we have to address is the problem of occlusion. A common problem with many of the classical face recognition systems is their incapability of dealing with occlusion. If a subject puts on a pair of sunglasses, let his/hers hair grow, cuts his beard, or so forth, an ideal system should still be able to classify the subject correctly.

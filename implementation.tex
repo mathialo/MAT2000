@@ -1,10 +1,10 @@
-\chapter{Practical implementation}
+\chapter{Practical Implementation}
 We now shift our attention away from the purely theoretical aspect, and towards the practical side. In this chapter we will seek to answer two main questions: How can a face recognition system using the SRC described in \cref{sec:src} be implemented? And how does it perform compared to the classical, state-of-the-art methods? We will begin by addressing the latter, and then look at some problems that arise when implementing the system.
 
 In order to implement and test a face recognition system, one will need a database of faces to test on. Many such databases exists, and some include the CMU multi-pie, the Yale database (and its successor, the extended Yale B database) and the AR Face Database. 
 
 
-\section{Comparison with classical methods}
+\section{Comparison with Classical Methods}
 Now that we have introduced a new classifier for face recognition, an immediate question becomes: Why develop a new classification scheme based on compressive sensing when there already exists multiple statistical classifiers suitable for face recognition? 
 
 In the field of statistical and machine learning, one studies, among other things, different classifiers, such as the LDA, KNN or SVM discussed earlier. Typically, we have that for one specific application, different classifiers will perform differently. Thus, for a given application, we can rate how the different classifiers perform. A common metric for classification performance is to observe the \textit{test error rate}.
@@ -45,11 +45,32 @@ An even more impressive result appears when the different classifiers is applied
 
 
 
-\section{Performance issues}
-In this section we will look at some of the 
+\section{Performance Issues}
+So far, we have only discussed the advantages of the SRC-based system for face recognition compared to the classical approaches. However, this gives an incomplete view of the system. In this section we will look at one major disadvantage to the SRC-based method, namely running time and memory use. 
+
+\subsection{Runtime Analysis}
+We will begin by looking at how the runtime of \cref{alg:src} will increase as the size of the problem increases (ie, as $ C, N, m $ and $ n $ increases). To do this we will use the Big-O notation.
+\begin{definition}
+	Let $ f, g $ be two functions $ f, g\colon\N\to\R $. Then $ f(n) \in \bigo(g(n)) $ if there exists a $ c \in \R $ and a $ N \in \N $ such that $ f(n) \leq cg(n) $ for all $ n > N $.
+\end{definition}
+\noindent We can think of Big-O as an upper bound on the true runtime.
+
+Step 1 and 3 of \cref{alg:src} are obviously linear-time operations. More precisely, they have a runtime of  $ \bigo(N) $ and $ \bigo(C) $ respectively. The bottleneck of the runtime is thus step 2. In \cref{sec:basisasLP} we saw how \eqref{eq:P1} could be recast as a LP problem. However, a famous result due to Klee and Minty renders this more or less useless. They showed that Simplex method using the largest-coefficient pivoting rule uses $ \bigo(2^{n}) $ pivots worst case, where $ n $ is the number of decision variables \cite[Section~4.4]{vanderbei14linprog}. For our case this means that using the simplex method to implement \cref{alg:src} will have a worst case runtime of $ \bigo(2^{N}) $.
+
+Various interior point methods exists, such as the path-following method. This algorithm uses newtons method to iteratively find better and better approximations to the optimal solution. However, even though the number of iterations no longer has exponential growth, since each iteration typically uses $ \bigo(N^{2}) $ operations, this too is to slow for our case \cite[Section~12.6]{eldar12theoryapplic}. This is because in a real world example, we will a very large number of training images $ N $.
+
+The last algorithm we will look at is the orthogonal matching pursuit used to create \cref{fig:l1min}. This algorithms solves a series of least-squares approximations. This too is an approach that scales badly, which is why it's mostly used for small problems \cite[Secion~3.2]{foucart13intro}.
+
+It it worth noting that some optimization algorithms with better per-iteration runtime exists, such as the Augmented Lagrange multiplier method described in \cite[Alg.~12.2]{foucart13intro}. 
+
+
+
+\subsection{Memory Usage}
+
+
+
+
 \todo[inline]{Size of data / Speed of computation}
-\todo[inline]{Kompleksitet av simplex og interior point \cite{vanderbei14linprog}}
-\todo[inline]{Nevne feks OMP som ble brukt tidligere}
 \todo[inline]{gange med matrise, vs å allokere hele mat.}
 
 

@@ -1,4 +1,4 @@
-\chapter{A sparse introduction to compressive sensing}
+\chapter{A Sparse Introduction to Compressive Sensing}
 \label{sec:basic_cs}
 
 We will introduce the basic idea of compressive sensing with an example quite similar to the one found in \cite{bryan13makingdo}. Suppose we have 100 coins. We suspect that a few of them might be counterfeit, and thus have a slightly different weight than the normal coins. 
@@ -23,7 +23,7 @@ The rest of this chapter will consider some of the properties we need of $ \A $ 
 
 
 
-\section{The general setting}
+\section{The General Setting}
 As we now have seen, if we assume that our solution vector $ \x $ is the sparsest solution $ \z $ to the system of equations $ \A\z = \y $, there is hope to find a unique solution even though our system of equations is underdetermined. In \cref{sec:minimum_measurements} we will look at when we have unique solutions up to a given sparsity $ s $, but for now we will only consider that minimizing the number of non-zero elements will reduce the solution space drastically. Formally we can write this as an optimization problem as follows:
 
 \begin{equation}
@@ -39,7 +39,7 @@ However, this problem seems to be intractable in practice. It is, in fact, NP-ha
 
 
 
-\subsection{Basis pursuit}
+\subsection{Basis Pursuit}
 Since \eqref{eq:P0} is computationally hard, we need something to approximate it. One intuitive guess would be to use minimization of another norm, like the $ \ell_{1} $ or $ \ell_{2} $ norm. It turns out that this is what we usually do in practice. 
 
 The question then becomes, which norm do we use? It can be shown that  as $ p $ gets lower, the $ \ell_{p} $ norm approximates the $ \ell_{0} $ norm better \cite[Section 4.1]{foucart13intro}. We will use the lowest value for $ p $ possible, while still having a minimization problem that can be solved in polynomial time. Thus, we will use the $ \ell_{1} $-norm. \cref{fig:l1l2balls} illustrates why $ \ell_{1} $-minimization works well to find the $ \ell_{0} $ minimum. 
@@ -93,7 +93,7 @@ Because we have used a random sensing matrix, there is no guarantee that basis p
 
 
 
-\subsection{Recasting \eqref{eq:P1} as a linear program}
+\subsection{Recasting \eqref{eq:P1} as a Linear Program} \label{sec:basisasLP}
 Now that we have a tractable way of finding sparse solutions, we will look at one way to actually solve \eqref{eq:P1}. In this section we will see how one can use linear programming to do this. Linear programming (LP) is the study of problems on the form
 \begin{equation}
 	\maximize{\x\in\K^{N}} \c^{T}\x \quad \subjectto \A\x\leq\b~,~~ \x\geq\0
@@ -161,7 +161,7 @@ Thus, we can use all the celebrated algorithms for Linear Programming to solve \
 
 
 
-\section{Good sensing matrices}
+\section{Good Sensing Matrices}
 \label{sec:goodmatrices}
 In this section we will look at the minimum number of measurements required, as well as some of the features we want our sensing matrix $ \A $ to possess, in order to ensure that basis pursuit works well. 
 
@@ -171,7 +171,7 @@ We will start by looking at how we can ensure unique $ s $-sparse solutions to t
 
 
 
-\subsection{Minimum number of measurements}
+\subsection{Minimum Number of Measurements}
 \label{sec:minimum_measurements}
 In this section we will look at how many measurements we need in order to ensure that \eqref{eq:P0} has only one $ s $-sparse solution. We begin by stating the main result of this section:
 \begin{theorem}
@@ -321,7 +321,7 @@ The question now becomes, how low can the coherence get? We know that we will ne
 
 
 
-\section{Sparsity in the real world}
+\section{Sparsity in the Real World}
 \subsection{Compressibility}
 The general framework developed in \cref{sec:goodmatrices} is designed for \textit{sparse} vectors without any errors. What if our signal is almost sparse, but not quite? Or what if the sampled signal is slightly distorted? In this section we will briefly cover how we can extend the theory presented in \cref{sec:goodmatrices} to cover such cases.
 
@@ -343,7 +343,7 @@ It can be shown that if the sensing matrix exhibits a strengthening of the NSP c
 
 
 
-\subsection{Achieving sparsity or compressibility}
+\subsection{Achieving Sparsity or Compressibility}
 So far we have just assumed our solution vector $ \x $ to be sparse or compressible. However, most real life signals are rarely sparse. Images are usually not mostly black, and songs are usually not mostly silence. Hence, we need some way to represent natural signals in a sparse way. 
 
 We will achieve this by applying what is known as a \textit{sparsifying transform}. Many such transforms exists, but in this report we will consider the \textit{Haar wavelet transform} as an example. The Haar wavelet is by far not the most efficient sparsifying transform, but it is quite understandable, which is why we have chosen it. 
