@@ -1,0 +1,343 @@
+\documentclass[a4paper, article, oneside, USenglish, hidelinks]{memoir}
+
+% Drawing
+\usepackage{pgf,tikz}
+\usetikzlibrary{arrows}
+
+
+%% Encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+
+%% Color
+\usepackage{xcolor}
+\definecolor{title_color}{HTML}{333370}
+\definecolor{todoback}{HTML}{E9E9F8}
+
+
+%% Fonts and typography
+\usepackage{lmodern}           % Latin Modern Roman
+\usepackage[scaled]{beramono}  % Bera Mono (Bitstream Vera Sans Mono)
+\renewcommand{\sfdefault}{phv} % Helvetica
+\usepackage[final]{microtype}  % Improved typography
+\usepackage{caladea}
+
+\pretitle{\begin{center}\color{title_color}\LARGE\sffamily\bfseries}                    % Title
+\renewcommand{\abstractnamefont}{\color{title_color}\sffamily\bfseries}                 % Abstract
+\renewcommand*{\chaptitlefont}{\color{title_color}\Large\bfseries\sffamily\raggedright} % Chapter
+\setsecheadstyle{\color{title_color}\Large\bfseries\sffamily\raggedright}               % Section
+\setsubsecheadstyle{\color{title_color}\large\sffamily\raggedright}               % Section
+
+
+%% small gap between paragraphs
+\setlength{\parskip}{2pt}
+
+
+%% todo notes
+\usepackage[color=todoback]{todonotes}
+
+
+%% Style figures
+\usepackage{caption}
+\captionsetup{labelfont=bf}
+
+
+%% Increase spacing before section and chapter titles
+\makeatletter
+\let\origchapter\chapter
+\renewcommand\chapter{\@ifstar{\starchapter}{\nostarchapter}}
+
+\newcommand\nostarchapter[1]
+{\chapterprelude\origchapter{#1}\chapterpostlude}
+
+\newcommand\starchapter[1]
+{\chapterprelude\origchapter*{#1}\chapterpostlude}
+
+\newcommand\chapterprelude{%
+	\vspace{2.5em}
+}
+
+\newcommand\chapterpostlude{%
+	%	\vspace{-1.4em}
+}
+\let\origsection\section
+\renewcommand\section{\@ifstar{\starsection}{\nostarsection}}
+
+\newcommand\nostarsection[1]
+{\sectionprelude\origsection{#1}\sectionpostlude}
+
+\newcommand\starsection[1]
+{\sectionprelude\origsection*{#1}\sectionpostlude}
+
+\newcommand\sectionprelude{%
+	\vspace{1.5em}
+}
+
+\newcommand\sectionpostlude{%
+%	\vspace{-1.4em}
+}
+\let\origsubsection\subsection
+\renewcommand\subsection{\@ifstar{\starsubsection}{\nostarsubsection}}
+
+\newcommand\nostarsubsection[1]
+{\subsectionprelude\origsubsection{#1}\subsectionpostlude}
+
+\newcommand\starsubsection[1]
+{\subsectionprelude\origsubsection*{#1}\subsectionpostlude}
+
+\newcommand\subsectionprelude{%
+	\vspace{0.5em}
+}
+
+\newcommand\subsectionpostlude{%
+	%	\vspace{-1.4em}
+}
+\makeatother
+
+
+%% Mathematics
+\usepackage{amssymb}   % Extra symbols
+\usepackage{amsthm}    % Theorem-like environments
+\usepackage{thmtools}  % Theorem-like environments
+\usepackage{mathtools} % Fonts and environments for mathematical formuale
+\usepackage{mathrsfs}  % Script font with \mathscr{}
+
+
+%% Miscellanous
+\usepackage{graphicx}  % Tool for images
+\usepackage{babel}     % Automatic translations
+\usepackage{csquotes}  % Quotes
+\usepackage{textcomp}  % Extra symbols
+\usepackage{lipsum}
+
+%% Code snippets
+\definecolor{source_blue}{HTML}{003399}
+\definecolor{source_brown}{HTML}{AAAA53}
+\definecolor{source_gray}{HTML}{F9F9F9}
+\definecolor{source_orange}{HTML}{E18A07}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\usepackage{listings}  % Typesetting code
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	breaklines=true,
+	keepspaces=true,
+	tabsize=4,
+	numbers=left,
+	numberstyle=\ttfamily\color{darkgray},
+	backgroundcolor=\color{source_gray},
+	rulecolor=\color{gray},
+	xleftmargin=2.7em,
+	frame=single,
+	framexleftmargin=2.4em,
+	showstringspaces=false,
+	literate={æ}{{\ae}}1{ø}{{\o}}1{å}{{\aa}}1
+}
+\newcommand{\pythonimport}[1]{
+	\lstinputlisting[
+	language=Python,
+	commentstyle=\color{source_brown}\ttfamily, 
+	morekeywords={True, False, as},
+	keywordstyle=\color{source_blue}\ttfamily,
+	stringstyle=\color{source_orange}]{#1}
+}
+\newcommand{\javaimport}[1]{
+	\lstinputlisting[
+	language=Java,
+	commentstyle=\color{source_brown}\ttfamily, 
+	morekeywords={String},
+	keywordstyle=\color{source_blue}\ttfamily,
+	stringstyle=\color{source_orange}]{#1}
+}
+\newcommand{\textimport}[1]{
+	\lstinputlisting{#1}
+}
+\usepackage{newfloat, caption}
+\DeclareFloatingEnvironment[fileext=cde,name={Code snippet}]{code}
+
+
+%% Bibliography
+\usepackage[backend = biber, style = alphabetic]{biblatex}
+\addbibresource{oppgave_biblio.bib}
+
+
+%% Cross references
+\usepackage{varioref}
+\usepackage{hyperref}
+\urlstyle{sf}
+\usepackage[nameinlink, capitalize, noabbrev]{cleveref}
+
+
+%% Theorem-like environments
+\declaretheorem[style = plain, numberwithin = chapter]{theorem}
+\declaretheorem[style = plain,      sibling = theorem]{corollary}
+\declaretheorem[style = plain,      sibling = theorem]{lemma}
+\declaretheorem[style = plain,      sibling = theorem]{proposition}
+\declaretheorem[style = definition, sibling = theorem]{definition}
+\declaretheorem[style = definition, sibling = theorem]{example}
+\declaretheorem[style = remark,    numbered = no]{remark}
+
+
+%% Numbering within chapter
+\counterwithin{equation}{chapter}
+\counterwithin{figure}{chapter}
+
+%% numbering of algorithms
+\usepackage[chapter]{algorithm}
+
+
+%% Operators
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\nul}{Nul}							% matrix-stuf
+\DeclareMathOperator{\rref}{rref}
+\DeclareMathOperator{\col}{Col}
+\DeclareMathOperator{\row}{Row}
+\newcommand{\inner}[2]{\langle #1 , #2 \rangle}
+\DeclareMathOperator{\supp}{supp}
+
+
+\newcommand{\minimize}[1]{\underset{#1}{\text{minimize}}~}
+\newcommand{\maximize}[1]{\underset{#1}{\text{maximize}}~}
+\newcommand{\subjectto}{\quad\text{subject to}~}
+
+
+%% New commands for sets
+\newcommand{\N}{\mathbb{N}}   % Natural numbers
+\newcommand{\Z}{\mathbb{Z}}   % Integers
+\newcommand{\Q}{\mathbb{Q}}   % Rational numbers
+\newcommand{\R}{\mathbb{R}}   % Real numbers
+\newcommand{\Cx}{\mathbb{C}}   % Complex numbers
+
+\newcommand{\K}{\mathbb{K}}   % R or C 
+\renewcommand{\P}{\mathbb{P}} % Projective space
+\newcommand{\indexset}[1]{\set{1, 2, \ldots, #1}}
+
+%% New symbols
+\renewcommand{\epsilon}{\varepsilon}
+
+
+%% New commands for vectors
+\renewcommand{\a}{\mathbf{a}}
+\renewcommand{\b}{\mathbf{b}}
+\renewcommand{\c}{\mathbf{c}}
+\renewcommand{\v}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+\newcommand{\w}{\mathbf{w}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\y}{\mathbf{y}}
+\newcommand{\z}{\mathbf{z}}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\A}{\mathbf{A}}   % sensing matrix
+
+
+% more math functions and symbols
+\newcommand{\abs}[1]{\left|#1\right|}					% absulute value (singe line norm): | |
+\newcommand{\ans}[1]{\underline{\underline{~#1~}}}		% two lines (for answers)
+\newcommand{\sqrtl}[1]{\sqrt{#1~}}						% sqrt with longer line (nice for big equations)
+\newcommand{\der}[2]{\frac{d}{d#2}\left(#1\right)}		% derivative
+\newcommand{\norm}[1]{\lVert#1\rVert}		% double line norm: || ||
+
+\newcommand{\twopartdef}[4]{							% for two-part definitions of functions, etc
+	\left\{
+	\begin{array}{cl}
+		#1 & #2 \\
+		#3 & #4
+	\end{array}
+	\right.
+}
+\newcommand{\threepartdef}[6]{							% for three-part definitions of functions, etc
+	\left\{
+	\begin{array}{cl}
+		#1 & #2 \\
+		#3 & #4 \\
+		#5 & #6
+	\end{array}
+	\right.
+}
+
+\newenvironment{subdef}{
+	\vspace{-4pt}
+	\begin{enumerate}[label=\itshape(\roman*),leftmargin=2\parindent]
+		\setlength{\itemsep}{4pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+	}{\end{enumerate}}
+
+\newcommand{\for}{\text{~~for }}
+\newcommand{\all}{\text{all }}
+
+\newcommand{\E}[1]{E\left[#1\right]}					% Statistics: Expectation, variance, gamma-function and probability
+\newcommand{\var}[1]{\text{Var}\left[#1\right]}
+\newcommand{\gam}[1]{\Gamma\left(#1\right)}
+\newcommand{\pr}[1]{\text{Pr}\left(#1\right) }
+\newcommand{\independent}{~{\perp\!\!\!\perp}~}
+\newcommand{\iid}{\stackrel{iid}{\sim}}
+
+\newcommand{\tuple}[1]{\langle #1 \rangle}				% tuples, sets..
+\newcommand{\set}[1]{\{#1\}}
+\newcommand{\st}{~|~}
+
+\newcommand{\dB}{\text{\;dB}}							% enheter
+\newcommand{\hz}{\text{\;Hz}}
+\newcommand{\rads}{\;\text{rad}/\text{s}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%% Miscellanous
+%\renewcommand{\qedsymbol}{\(\blacksquare\)}
+\usepackage{ifdraft}
+\usepackage{enumitem}
+
+\tolerance = 5000 % LaTeX er normalt streng når det gjelder linjebrytingen.
+\hbadness = \tolerance % Vi vil være litt mildere, særlig fordi norsk har så
+\pretolerance = 2000 % mange lange sammensatte ord.s
+
+\newcommand{\inputPone}{\begin{equation}
+	\minimize{\mathbf{z} \in \Cx^{N}} \norm{\mathbf{z}}_1
+	\subjectto \mathbf{A}\mathbf{z} = \mathbf{y}
+	\tag{P$_1$}
+	\end{equation}}
+
+
+\title{Face Recognition with Compressive Sensing}
+\author{Mathias Lohne}
+\date{Spring, 2017}
+
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+    \noindent
+    \todo[inline]{Brief summary of the paper}
+\end{abstract}
+
+\begin{KeepFromToc}
+%	\tableofcontents
+\end{KeepFromToc}
+
+
+\input{introduction.tex}
+\input{basic_cs.tex}
+\input{app_to_face_recog.tex}
+\input{implementation.tex}
+\input{conclusions.tex}
+
+
+\printbibliography
+
+%\newpage
+%\appendix
+%\chapter{Code listings}
+%\section{For \cref{fig:l1min}}
+%\pythonimport{code/CStest.py}
+%\newpage
+%\section{For \cref{fig:dwt_sparsifying}}
+%\pythonimport{figs/make_wavelet_example.py}
+
+
+\end{document}
+\grid

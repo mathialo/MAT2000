@@ -1,0 +1,58 @@
+\chapter{Practical implementation}
+We now shift our attention away from the purely theoretical aspect, and towards the practical side. In this chapter we will seek to answer two main questions: How can a face recognition system using the SRC described in \cref{sec:src} be implemented? And how does it perform compared to the classical, state-of-the-art methods? We will begin by addressing the latter, and then look at some problems that arise when implementing the system.
+
+In order to implement and test a face recognition system, one will need a database of faces to test on. Many such databases exists, and some include the CMU multi-pie, the Yale database (and its successor, the extended Yale B database) and the AR Face Database. 
+
+
+\section{Comparison with classical methods}
+Now that we have introduced a new classifier for face recognition, an immediate question becomes: Why develop a new classification scheme based on compressive sensing when there already exists multiple statistical classifiers suitable for face recognition? 
+
+In the field of statistical and machine learning, one studies, among other things, different classifiers, such as the LDA, KNN or SVM discussed earlier. Typically, we have that for one specific application, different classifiers will perform differently. Thus, for a given application, we can rate how the different classifiers perform. A common metric for classification performance is to observe the \textit{test error rate}.
+
+In order to precisely test the accuracy of a classification model, we need some testing data independent from the training data. Typically, this is achieved by dividing the total data available into two sets: a training set used to build the model, and a test set used to test the model. For our case, we will split our set of images $ \set{(\phi_{i}, l_{i})}_{i=1}^{N} $ in two, and make sure that for each person $ i $, we have equally many images of $ i $ in the training and the testing set. In the rest of this section, we will by $ I \subset \indexset{N} $ denote the set of indexes for the training images, and by $ J = \indexset{N} \setminus I $ denote the set of indexes for the testing images. 
+
+Given a model and a set of testing images, the \textit{test error rate} is given as
+\begin{equation}
+	\label{eq:errorrate}
+	\dfrac{1}{\,\abs{J}\,} \, \sum_{i\in J} \mathcal{I}(\hat{l_{i}} \neq l_{i})
+\end{equation}
+where $ \hat{l_{i}} $ is the predicted label of the image, $ l_{i} $ is the true label of the image, and $ \mathcal{I} $ denotes the indicator function. A good classifier is one for which the test error rate is small \cite[Section~2.2]{ISLR}.
+
+An empirical comparison of the SRC with the more classical methods NN (ie: KNN with $ K = 1 $), NS (KNS with $ K=1 $) and linear-kernel SVM is found in \cite{wright09facerecog}. In this comparison, the researchers used the \textit{Extended Yale B Database} consisting of $ 2\,414 $ images of $ 38 $ individuals, as well as the \textit{AR database} consisting of over $ 4\,000 $ images of 126 individuals. For each subject, they used half of the images for training, and half of the images for testing. Then they paired up the different classifiers with different feature extraction and feature dimensions, and compared their test error rate\footnote{In \cite{wright09facerecog} they actually talk about \textit{recognition rate}, which is $ 1 - $ test error rate. My guess would be that the authors are the \textit{``glass is half-full''}-kind of people.}.
+
+\begin{table}[t]
+	\centering
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{r | c c c}
+		           & \multicolumn{3}{l}{\quad Feature dimension}                    \\
+		Classifier & $ \quad50\quad $ & $ \quad100\quad $ & $ \quad200\quad $ \\ \hline
+		       SRC &                  &                   &  \\
+		        NN &                  &                   &  \\
+		        NS &                  &                   &  \\
+		       SVM &                  &                   &
+	\end{tabular}
+	\renewcommand{\arraystretch}{1}
+	\caption{Test error rates reported in \cite{wright09facerecog} for the SRC, NN, NS and SVM using the Laplacianfaces scheme for feature extraction}
+	\label{table:errorrates}
+	\todo[inline]{Finn data i \cite{wright09facerecog} og fyll inn tabell}
+	\vspace{4pt}\hrule
+\end{table}
+
+We have included some of the results from \cite{wright09facerecog} in \cref{table:errorrates}. We have concentrated on the Laplacianfaces scheme for feature extraction, as this seemed to perform well with all the different classifiers. As one can see from the table, the SRC performs quite well. 
+
+An even more impressive result appears when the different classifiers is applied to occluded or corrupted images. For images where parts of the face is occluded, the researchers found that the test error rate was below $ 0.02 $, even when up to $ 30\% $ of the face where occluded. At $ 40\% $ occlusion the test error rate increased to $ 0.1 $, and for $ 50\% $ they reported a test error rate of $ 0.35 $. Meanwhile, the researchers reported a test error rate of $ > 0.2 $ at $ 30\% $ occlusion for the nearest-neighbor methods, and at $ 50\% $ they reported a test error rate between $ 0.5 $ and $ 0.7 $. Similar results were found for corrupted images. 
+
+
+
+
+\section{Performance issues}
+In this section we will look at some of the 
+\todo[inline]{Size of data / Speed of computation}
+\todo[inline]{Kompleksitet av simplex og interior point \cite{vanderbei14linprog}}
+\todo[inline]{Nevne feks OMP som ble brukt tidligere}
+\todo[inline]{gange med matrise, vs å allokere hele mat.}
+
+
+
+
+

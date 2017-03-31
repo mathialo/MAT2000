@@ -1,0 +1,138 @@
+\chapter{Applications to face recognition}
+We will now shift our focus away from general compressive sensing, and look at how these techniques of sparse recovery can be used to build a framework for a complete face recognition system. 
+
+The face recognition problem is a classical one in the area of statistical learning and machine intelligence. Hence it is a broadly studied problem, with many proposed solutions. The classical way to do face recognition is to first do what is called feature extraction. One can think of feature extraction as a projection to a lower dimensional feature space, such that the requirements for memory and computational power is reduced. Popular methods for this includes Principal Component Analysis and Discrete Cosine Transform \cite{bhat2014performance}.
+
+After projecting the images down to a lower resolution space, one typically applies some statistical classification scheme. Typical classifiers used in classical face recognition include  Linear Discriminant Analysis (LDA) \cite{bhat2014performance}, $ K $ Nearest Neighbor/Subspace (KNN/KNS) \cite{lee2005acquiring} and (Linear-kernel) Support Vector Machine (SVM) \cite{wright09facerecog}. These methods seems to work well when in a controlled environment. However, when parameters such as lighting or noise level changes, or when a person occludes parts of his/her face (like the addition of glasses), these methods often begin to struggle \cite{eldar12theoryapplic}.
+
+In this chapter we will introduce a new classification scheme called Sparse Representation-based Classification (SRC) \cite{wright09facerecog}. This is an alternative method to the LDA or KNN discussed above, but does not replace the dimensionality reduction. In this report, however, we will not discuss feature extraction in any more detail, but focus on the classification scheme. 
+
+In order to do face recognition, we first need a set of $ N $ labeled \textit{training images} $ \set{(\phi_{i}, l_{i})}_{i=1}^{N} $. This is a set of images which our algorithm will use to learn what the different people we want to recognize looks like. Here, $ (\phi_{i}, l_{i}) $ denotes the tuple consisting of the $ i $'th image $ \phi_{i} $, and a label $ l_{i} \in \set{1, 2, \ldots, C} $ indicating which of the $ C $ subjects the image $ \phi_{i} $ is of. The systems job is then, given a new test image $ \y $, to say which of the $ C $ subjects is pictured in $ \y. $
+
+
+
+
+\section{Sparse Representation-based Classification} \label{sec:src}
+At first we must address a potential problem. All of the theory developed in \cref{sec:basic_cs} concerns vectors in $ \K^{N} $, while we usually think of images as matrices in $ \R^{m\times n} $. It seems we have a problem with dimensionality. However this problem can be easily solved by simply stacking all the columns of the image matrix $ \A $ on top of each other in the following way:
+\[
+	\A = \begin{bmatrix}
+		\a_{1} & \a_{2} & \cdots & \a_{n}
+	\end{bmatrix} \in \R^{m\times n}
+	\quad\text{becomes}\quad 
+	\a = \begin{bmatrix}
+		\a_{1} \\
+		\a_{2} \\
+		\vdots \\
+		\a_{n}
+	\end{bmatrix} \in \R^{mn}
+\]
+
+We begin by making an observation: if our training images of subject $ i $ is of varying illumination, and if we assume that they are all aligned correctly, we will expect a test image of subject $ i $ to be closely approximated by a linear combination of the test images. That is, for a new test image $ \y $ of subject $ i $, there exists $ k_{i} $ coefficients $ c_{1}, c_{2}, \ldots, c_{k_{i}}  \in \R $ (here, $ k_{i} $ is the number of images of subject $ i $) such that:
+\begin{equation}
+	\label{eq:approxtestimage}
+	\y \approx \sum_{j \st l_{j} = i} \phi_{j}c_{j}
+\end{equation}We note that if we define $ \c_{i} \in \R^{k_{i}} $ to be the vector of all the coefficients, and $ \mathbf{\Phi}_{i} \in \R^{mn \times k_{i}} $ to be the matrix consisting of all the corresponding images as columns, we can rewrite \eqref{eq:approxtestimage} as:
+\begin{equation}
+	\label{eq:approxtestimagematrix}
+	\y \approx \mathbf{\Phi}_{i}\c_{i}
+\end{equation}
+
+This is of course assuming that $ i $ is known, which of course it is not. However this is easily solved by padding $ \c_i $ with zeros. This is safe to do, since we expect all the other coefficients to be $ 0 $ anyway (at least close to $ 0 $). Thus we arrive at the zero-padded version of $ \c_{i} $:
+\begin{equation*}
+	\label{eq:c0def}
+	\c_{0} = \begin{bmatrix}~\cdots & \0^{T} & \c_{i}^{T} & \0^{T} & \cdots~\end{bmatrix}^{T} \in \R^{N}
+\end{equation*}
+Now, if we concatenate all the images in the entire training database into a matrix as such:
+\[
+	\mathbf{\Phi} = \begin{bmatrix}\mathbf{\Phi}_{1} & \mathbf{\Phi}_{2} & \cdots & \mathbf{\Phi}_{C}\end{bmatrix} \in \R^{mn \times N}
+\]
+where $ \mathbf{\Phi}_{i} $ is the matrix consisting of all the training images of subject $ i $ concat\-enated, we see that we can rewrite \eqref{eq:approxtestimagematrix} as:
+\begin{equation}
+	\label{eq:approxtestimagefinal}
+	\y \approx \mathbf{\Phi}\c_{0}
+\end{equation}
+This will clearly be the case, no matter what $ i $ is. 
+
+Summarizing what we have shown so far, we get that we are given a sensed testing image $ \y $, and we are trying to find a vector of coefficients $ \c_{0} $ such that $ \y \approx \mathbf{\Phi}\c_{0} $. We also know that $ \c_{0} $ should be highly sparse, since we expect most images in the database to \textit{not} be similar to the testing image. In fact, we only expect an average of $ 1/C $ entries in $ \c_{0} $ to be non-zero. 
+
+In the last chapter we introduced theory for finding the sparsest solution to such systems of equations. However, we now have a system of approximations. If we assume that the error is less than some error term $ \epsilon $, we can state a minimization problem that we expect $ \c_{0} $ to be the optimal solution to:
+\begin{equation}
+	\label{eq:cs_face_recog}
+	\minimize{\c \in \R^{N}} \norm{\c}_{1} \quad\subjectto \norm{\y - \mathbf{\Phi}\c}_{2} \leq \epsilon
+\end{equation}
+We observe that \eqref{eq:cs_face_recog} has the same form as \eqref{eq:P1eps}. Thus, we can use compressive sensing techniques to solve this minimization problem. 
+
+By finding an optimal solution to \eqref{eq:cs_face_recog}, we get a vector $ \hat{\c}_{0} $ of estimated coefficients. It remains to determine which person we believe the image to be of. We will do this by choosing the person who minimizes the squared error term. That is, the person $ i $ who minimizes the distance between the sampled test image $ \y $ and the linear combination of training images of person $ i $. In this respect, SRC can be thought of as a type of Nearest Neighbor. 
+
+Summarizing all of the above, we get the algorithm described in \cref{alg:src}. 
+
+
+
+\begin{algorithm}[t]
+	\caption{Sparse Representation-based Classification for face recognition}
+	\label{alg:src}
+	\begin{enumerate}
+		\itemsep0em 
+		\renewcommand{\parsep}{0pt}
+		\renewcommand{\parskip}{0pt}
+		\renewcommand{\itemsep}{0pt}
+		\item[] \textbf{Input:} A matrix of training images $ \mathbf{\Phi} \in \R^{mn\times N} $ of $ C $ persons, a test image $ \y\in\R^{N} $, and a tolerance $ \epsilon > 0 $.
+		\item Normalize the columns of $ \mathbf{\Phi} $ to have a $ \ell_{2} $ norm of $ 1 $
+		\item Solve the $ \ell_{1} $-minimization problem:
+		\[
+			\hat{\c}_{0} = \argmin_{\c} \norm{\c}_{1} ~\subjectto \norm{\mathbf{\Phi}\c - \y} \leq \epsilon
+		\]
+		\item Compute the residuals $ r_{i}(\y) = \norm{\y - \mathbf{\Phi}_{i}(\hat{\c}_{0})_{i}}_{2} $ for all $ i \in \indexset{C} $. Here $ \mathbf{\Phi}_{i} $ and $ (\hat{\c}_{0})_{i} $ denotes all the training images and estimated coefficients associated with person $ i $. 
+		\item[] \textbf{Output:} $ \hat{l_{i}} $ = identity of $ \y = \argmin_{i} r_{i}(\y) $  
+	\end{enumerate}
+\end{algorithm}
+
+
+\section{Addressing corruption and occlusion}
+A common problem when dealing with numerical problems of any sort is the introduction of round-off errors. A typical computer today uses 64 bit processors, this means that the processor (and all the other components) can store and process 64 binary digits of a number. Any real number must then be approximated by the closest number possible to write with 64 binary digits. Typically, this introduces a small error $ \epsilon_{i} < 2^{-53} \approx 10^{-16} $ for every pixel in the image. In addition to round-off errors, all image sensors introduce some image noise. 
+
+In addition to uniform noise, another problem we have to address is the problem of occlusion. A common problem with many of the classical face recognition systems is their incapability of dealing with occlusion. If a subject puts on a pair of sunglasses, let his/hers hair grow, cuts his beard, or so forth, an ideal system should still be able to classify the subject correctly.
+
+
+\begin{definition}
+	\label{def:propgrowth}
+	We say a sequence of error-signal exhibits \textit{proportional growth} with parameters $ \delta > 0 $, $ \rho \in (0,1) $, $ \alpha > 0 $ if	
+	\[
+		n = \lfloor \delta m \rfloor,\quad \norm{\mathbf{e}_{0}}_{0} = \lfloor \rho m \rfloor, \quad \norm{\x_{0}}_{0} = \lfloor \alpha m \rfloor
+	\]
+\end{definition}
+
+Before we state the main result of this section, we will give an interpretation of the parameters involved in \cref{def:propgrowth}. Our first parameter, $ n $, gives a ratio between the length of the real signal, and the length of the measured signal. In other words, $ n $, is the compression rate. The next two parameters deals with sparsity: $ \alpha $ is a measure of the sparsity of the uncorrupted signal, and $ \rho $ is the sparsity of the error. 
+
+If a signal exhibits this property, we have that the following result holds:
+
+\begin{theorem}
+	\label{thm:errorcorr}
+	Fix any $ \delta>0 $, $ \rho<1 $. Suppose that $ \A $ is a random matrix with columns drawn independently from a multivariate normal distribution as such:
+	\[
+		\a_{i} \iid N\left(\boldsymbol{\mu}, \frac{\nu^{2}}{m}\mathbf{I}_{m}\right)~, \quad \norm{\boldsymbol{\mu}}_{2} = 1~, \quad \norm{\boldsymbol{\mu}}_{\infty} \leq C_{\mu}m^{-1/2}
+	\]
+	for some constant $ C_{\mu} $. Assume that $ \nu $ is sufficiently small, that $ J \subset \indexset{m} $ is a uniform random subset of size $ \rho m $, that $ \boldsymbol{\sigma} \in \R^{m} $ with $ \boldsymbol{\sigma}_{J} $ $ \iid \text{Unif}(\set{-1, 1}) $ (independent of $ J $), that $ \boldsymbol{\sigma}_{\overline{J}} = \0 $ and that $ m $ is sufficiently large. Then with probability at least $ 1 - C e^{-\epsilon^{*}m} $ in $ A, J, \boldsymbol{\sigma} $, for all $ \x_{0} $ with $ \norm{\x_{0}}_{0} \leq \alpha^{*}m $ and any $ \mathbf{e}_{0} $ with signs and support $ (\boldsymbol{\sigma}, J) $, 
+	\begin{equation}
+		\label{eq:errorcorr}
+		(\x_{0}, \mathbf{e}_{0}) = \argmin_{(\x,\mathbf{e})} \norm{\x}_{1} + \norm{\mathbf{e}}_{1} \quad\subjectto \A\x + \mathbf{e} = \A\x_{0} + \mathbf{e}_{0}
+	\end{equation}
+	and the minimizer is uniquely defined.
+\end{theorem}
+
+A proof of this theorem will not be given here, but is found in \cite{wright10dense}. We will instead give a small interpretation of its consequences. 
+
+It is worth noting that many of the technical assumptions in \cref{thm:errorcorr} is present only to make the theorem provable. The main result is that we can recover a signal by using $ \ell_{1} $-minimization, even if the signal has some noise, and even if the noise is not sparse. However, for this to work we need our error and signal to exhibit certain properties, and the most important one is the proportional growth. 
+
+Intuitively, we can think of the result this way: If our error is very dense, we need the signal to be very sparse, and vice versa. 
+
+One last problem we have not addressed yet is the problem of misalignment. Usually, images of faces are not perfectly aligned and cropped, so a fully functioning face recognition system should be able to deal with misaligned images. However, we will not address this problem here, but a more in-depth look at this can be found in Section~12.5 of \cite{eldar12theoryapplic}.
+
+
+
+
+
+
+
+
+

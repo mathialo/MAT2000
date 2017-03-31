@@ -1,0 +1,34 @@
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=2.0cm,y=2.0cm, scale=0.8]
+\draw[-,color=black] (-1.2,0) -- (1.2,0);
+\foreach \x in {-1,-0.5,0.5,1}
+\draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt) node[below] {\color{gray} \tiny $\x$};
+\draw[-,color=black] (0,-1.2) -- (0,1.2);
+\foreach \y in {-1,-0.5,0.5,1}
+\draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt) node[left] {\color{gray} \tiny $\y$};
+\draw[color=black] (0pt,-10pt) node[right] {\color{gray} \tiny $0$};
+\clip(-1.2,-1.2) rectangle (1.2,1.2);
+\draw [dash pattern=on 1pt off 1pt,domain=-1.2:1.2] plot(\x,{(--2-1*\x)/2});
+\draw (0,1)-- (1,0);
+\draw (1,0)-- (0,-1);
+\draw (0,1)-- (-1,0);
+\draw (-1,0)-- (0,-1);
+\begin{scriptsize}
+\fill [color=black] (0,1) circle (2.0pt);
+\end{scriptsize}
+\end{tikzpicture}
+\quad\quad
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=2.0cm,y=2.0cm, scale=0.8]
+\draw[-,color=black] (-1.2,0) -- (1.2,0);
+\foreach \x in {-1,-0.5,0.5,1}
+\draw[shift={(\x,0)},color=black] (0pt,2pt) -- (0pt,-2pt) node[below] {\color{gray} \tiny $\x$};
+\draw[-,color=black] (0,-1.2) -- (0,1.2);
+\foreach \y in {-1,-0.5,0.5,1}
+\draw[shift={(0,\y)},color=black] (2pt,0pt) -- (-2pt,0pt) node[left] {\color{gray} \tiny $\y$};
+\draw[color=black] (0pt,-10pt) node[right] {\color{gray} \tiny $0$};
+\clip(-1.2,-1.2) rectangle (1.2,1.2);
+\draw [dash pattern=on 1pt off 1pt,domain=-1.2:1.2] plot(\x,{(--2-1*\x)/2});
+\draw(0,0) circle (1.79cm);
+\begin{scriptsize}
+\fill [color=black] (0.41,0.79) circle (2.0pt);
+\end{scriptsize}
+\end{tikzpicture}

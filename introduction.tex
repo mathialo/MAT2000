@@ -1,0 +1,70 @@
+\chapter{Introduction}
+\todo[inline]{Wrtie introduction}
+
+In this report we will first give a general introduction to the basic concepts of compressed sensing, and then look at how these techniques can be applied to the face recognition problem. 
+
+
+\section{Preliminaries and notation}
+In this section we will introduce some of the necessary notation and concepts for this report. 
+
+Throughout the report we will denote vectors by boldface lower case letters, and matrices by boldface upper case letters. For a vector $ \x $, we will by $ x_{i} $ refer to the $ i $'th element in the vector. Similarly, for a matrix $ \A $, we will by $ \a_{i} $ refer to the $ i $'th  column of $ \A $. 
+
+Sets will be denoted by italic upper case letters, and the cardinality of a set $ S $ is denoted as $ \abs{S} $. The complement of a set $ S $ will be written as $ \overline{S} $. 
+
+\subsection{Norms}
+We begin with the definition of norms. 
+
+\begin{definition} \label{def:norm}
+	Let $ V $ be a vector space over $ \K $.  A norm $ \norm{\cdot} $ on $ V $ is a function $ \norm{\cdot}\colon V \to\R $ such that
+	\begin{subdef}
+		\item $ \norm{\v} \geq 0 $ for all $ \v \in V $ with $ \norm{\v} = \0 $ if and only if $ \v = \0 $
+		\item $ \norm{c\v} = \abs{c}\norm{\v} $ for all $ \v \in V $ and $ c \in \K $
+		\item $ \norm{\u + \v} \leq \norm{\u} + \norm{\v} $ for all $ \u,  \v \in V $
+	\end{subdef}
+\end{definition}
+
+This definition is quite broad, and very general. In this report we will be working more closely with a family of norms called the $ \ell_{p} $ norms:
+
+\begin{definition} \label{def:lpnorm}
+	Let $ p \geq 1 $ and $ p \in \R $. The $ \ell_{p} $ norm $ \norm{\cdot}_{p} $ is defined as
+	\[
+		\norm{\v}_{p} = \left( \sum_{i=1}^{n} \abs{v_{i}}^{p} \right)^{\dfrac{1}{p}}
+	\]
+\end{definition}
+
+We will not prove here that the $ \ell_{p} $-norms actually are norms (ie, that $ \norm{\cdot}_{p} $ fulfills the axioms in \cref{def:norm}), but this can be proven for all $ p\geq 1 $. We observe that for $ p=1 $ we get the Manhattan norm, and for $ p=2 $ we get euclidean norm. If we let $ p\to\infty $ we arrive at the supremum norm. Even though \cref{def:lpnorm} does not allow for $ p < 1 $, if we let $ p\to0 $, accept that $ 0^{0} = 0 $, and ignore the $ 1/p $-exponent, we get what is sometimes called the $ \ell_{0} $ norm:
+
+\begin{definition} \label{def:l0norm}
+	The $ \ell_{0} $ norm $ \norm{\cdot}_{0} $ is the number of non-zero entries in $ \v $.
+\end{definition}
+
+It is worth noting that the $ \ell_{0} $ norm is strictly speaking not a norm, since $ \norm{\cdot}_{0} $ does not fulfill axiom \textit{(ii)} of \cref{def:norm}. Despite this, it is customary to refer to $ \norm{\cdot}_{0} $ as the $ \ell_{0} $ norm.
+
+\subsection{Support and sparsity}
+
+\begin{definition} \label{def:support}
+	Let $ \v \in \Cx^{N} $. The support $ S $ of $ \v $ is defined as the index set of its non-zero entries, that is:
+	\[
+		\supp \v = \set{j \in \indexset{N} \st v_{j} \neq 0}
+	\]
+\end{definition}
+
+The notion of support yields a new formulation of \cref{def:l0norm}: The $ \ell_{0} $ norm is simply the cardinality of the support: $ \norm{\v}_{0} = \abs{\supp \v} $.
+
+For a vector $ \v\in\Cx^{N} $ and a set $ S \subset \indexset{N} $, we denote by $ \v_{S} $ either the subvector in $ \Cx^{\abs{S}} $ consisting of the entries in $ \v $ indexed by $ S $, that is:
+\begin{equation}
+	\label{eq:vSalt1}
+	(\v_{S})_{i} = v_{i} \for i \in S
+\end{equation}
+Or the vector in $ \Cx^{N} $ which coincides with $ \v $ on the indexes in $ S $, and is zero otherwise, that is:
+\begin{equation}
+	\label{eq:vSalt2}
+	(\v_{S})_{i} = \twopartdef{v_{i}}{\text{if } i \in S}{0}{\text{Otherwise}}
+\end{equation}
+It should always be clear from context which of these is used. Similarly, for a matrix $ \A\in\R^{m \times n} $ we will by $ \A_{S} \in \R^{m \times \abs{S}} $ refer to the matrix consisting of the columns of $ \A $ indexed by $ S $.
+
+The final concept we will introduce is the notion of \textit{sparsity}:
+
+\begin{definition} A vector $ \v \in \Cx^{N} $ is said to be $ s $-sparse if it has no more than $ s $ non-zero entries. That is, $ \norm{\v}_{0} \leq s $
+\end{definition}
+
