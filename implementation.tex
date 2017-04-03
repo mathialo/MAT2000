@@ -23,18 +23,17 @@ An empirical comparison of the SRC with the more classical methods NN (ie: KNN w
 \begin{table}[t]
 	\centering
 	\renewcommand{\arraystretch}{1.2}
-	\begin{tabular}{r | c c c}
-		           & \multicolumn{3}{l}{\quad Feature dimension}                    \\
-		Classifier & $ \quad50\quad $ & $ \quad100\quad $ & $ \quad200\quad $ \\ \hline
-		       SRC &                  &                   &  \\
-		        NN &                  &                   &  \\
-		        NS &                  &                   &  \\
-		       SVM &                  &                   &
+	\begin{tabular}{r | c c c c}
+		           & \multicolumn{4}{l}{\quad Feature dimension}                                 \\
+		Classifier & $ \quad30\quad $ & $ \quad56\quad $ & $ \quad120\quad $ & $ \quad504\quad $ \\ \hline
+		       SRC & $ 0.125 $        & $ 0.083 $        & $ 0.060 $         & $ 0.035 $         \\
+		        NN & $ 0.229 $        & $ 0.165 $        & $ 0.128 $         & $ 0.093 $         \\
+		        NS & $ 0.110 $        & $ 0.096 $        & $ 0.081 $         & $ 0.066 $         \\
+		       SVM & $ 0.280 $        & $  0.150 $       & $ 0.060 $         & $ 0.023 $
 	\end{tabular}
 	\renewcommand{\arraystretch}{1}
-	\caption{Test error rates reported in \cite{wright09facerecog} for the SRC, NN, NS and SVM using the Laplacianfaces scheme for feature extraction}
+	\caption{Test error rates reported in \cite{wright09facerecog} for the SRC, NN, NS and SVM using the Laplacianfaces scheme for feature extraction, and using the extended Yale B database}
 	\label{table:errorrates}
-	\todo[inline]{Finn data i \cite{wright09facerecog} og fyll inn tabell}
 	\vspace{4pt}\hrule
 \end{table}
 
@@ -61,16 +60,15 @@ Various interior point methods exists, such as the path-following method. This a
 
 The last algorithm we will look at is the orthogonal matching pursuit used to create \cref{fig:l1min}. This algorithms solves a series of least-squares approximations. This too is an approach that scales badly, which is why it's mostly used for small problems \cite[Secion~3.2]{foucart13intro}.
 
-It it worth noting that some optimization algorithms with better per-iteration runtime exists, such as the Augmented Lagrange multiplier method described in \cite[Alg.~12.2]{foucart13intro}. 
+It is worth noting that some optimization algorithms with better per-iteration runtime exists, such as the Augmented Lagrange multiplier method described in \cite[Alg.~12.2]{foucart13intro}. Other algorithms, such as homotopy algorithms, make use of the fact that the solution is sparse, and are able to recover the $ \ell_{1} $-minimum of an $ s $-sparse vector in $ \R^{N} $ in $ \bigo(s^{3} + N) $ time \cite{wright09facerecog}.
 
 
 
 \subsection{Memory Usage}
+As we now have seen, the issue with runtime can be somewhat dealt with. Still, another issue remains, and that is memory usage. 
 
 
-
-
-\todo[inline]{Size of data / Speed of computation}
+\todo[inline]{size of data}
 \todo[inline]{gange med matrise, vs å allokere hele mat.}
 
 
