@@ -7,7 +7,7 @@ In this report we will first give a general introduction to the basic concepts o
 \section{Preliminaries and Notation}
 In this section we will introduce some of the necessary notation and concepts for this report. 
 
-Throughout the report we will denote vectors by boldface lower case letters, and matrices by boldface upper case letters. For a vector $ \x $, we will by $ x_{i} $ refer to the $ i $'th element in the vector. Similarly, for a matrix $ \A $, we will by $ \a_{i} $ refer to the $ i $'th  column of $ \A $. 
+Throughout the report we will denote vectors by boldface lower case letters, and matrices by boldface upper case letters. For a vector $ \x $, we will by $ x_{i} $ refer to the $ i $'th element in the vector. Similarly, for a matrix $ \A $, we will by $ \a_{i} $ refer to the $ i $'th  column of $ \A $, and by $ a_{i, j} $ denote the element on  column $ j $ and row $ i $.
 
 Sets will be denoted by italic upper case letters, and the cardinality of a set $ S $ is denoted as $ \abs{S} $. The complement of a set $ S $ will be written as $ \overline{S} $. 
 
@@ -32,13 +32,13 @@ This definition is quite broad, and very general. In this report we will be work
 	\]
 \end{definition}
 
-We will not prove here that the $ \ell_{p} $-norms actually are norms (ie, that $ \norm{\cdot}_{p} $ fulfills the axioms in \cref{def:norm}), but this can be proven for all $ p\geq 1 $. We observe that for $ p=1 $ we get the Manhattan norm, and for $ p=2 $ we get euclidean norm. If we let $ p\to\infty $ we arrive at the supremum norm. Even though \cref{def:lpnorm} does not allow for $ p < 1 $, if we let $ p\to0 $, accept that $ 0^{0} = 0 $, and ignore the $ 1/p $-exponent, we get what is sometimes called the $ \ell_{0} $ norm:
+We will not prove here that the $ \ell_{p} $-norms actually are norms, but this can be proven for all $ p\geq 1 $. We observe that for $ p=1 $ we get the Manhattan norm, and for $ p=2 $ we get euclidean norm. If we let $ p\to\infty $ we arrive at the supremum norm. Even though \cref{def:lpnorm} does not allow for $ p < 1 $, if we let $ p\to0 $, accept that $ 0^{0} = 0 $, and ignore the $ 1/p $-exponent, we get what is sometimes called the $ \ell_{0} $ norm:
 
 \begin{definition} \label{def:l0norm}
 	The $ \ell_{0} $ norm $ \norm{\cdot}_{0} $ is the number of non-zero entries in $ \v $.
 \end{definition}
 
-It is worth noting that the $ \ell_{0} $ norm is strictly speaking not a norm, since $ \norm{\cdot}_{0} $ does not fulfill axiom \textit{(ii)} of \cref{def:norm}. Despite this, it is customary to refer to $ \norm{\cdot}_{0} $ as the $ \ell_{0} $ norm.
+It is worth noting that the $ \ell_{0} $ norm is strictly speaking not a norm, since $ \norm{\cdot}_{0} $ does not fulfill axiom \textit{(ii)} of \cref{def:norm}. In fact, for all $ q<1 $, $ \norm{\cdot}_{q} $ is not a norm. Despite this, it is customary to refer to $ \norm{\cdot}_{0} $ as the $ \ell_{0} $ norm.
 
 \subsection{Support and Sparsity}
 
@@ -56,7 +56,7 @@ For a vector $ \v\in\Cx^{N} $ and a set $ S \subset \indexset{N} $, we denote by
 	\label{eq:vSalt1}
 	(\v_{S})_{i} = v_{i} \for i \in S
 \end{equation}
-Or the vector in $ \Cx^{N} $ which coincides with $ \v $ on the indexes in $ S $, and is zero otherwise, that is:
+Or the vector in $ \Cx^{N} $ which coincides with $ \v $ on the indices in $ S $, and is zero otherwise, that is:
 \begin{equation}
 	\label{eq:vSalt2}
 	(\v_{S})_{i} = \twopartdef{v_{i}}{\text{if } i \in S}{0}{\text{Otherwise}}
