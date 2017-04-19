@@ -1,9 +1,9 @@
-\chapter{Applications to Face Recognition}
+\chapter{Applications to Face Recognition} \label{sec:applications}
 We will now shift our focus away from general compressive sensing, and look at how these techniques of sparse recovery can be used to build a framework for a complete face recognition system. 
 
 The face recognition problem is a classical one in the area of statistical learning and machine intelligence. Hence it is a broadly studied problem, with many proposed solutions. The classical way to do face recognition is to first do what is called feature extraction. One can think of feature extraction as a projection to a lower dimensional feature space, such that the requirements for memory and computational power is reduced. Popular methods for this includes Principal Component Analysis and Discrete Cosine Transform \cite{bhat2014performance}.
 
-After projecting the images down to a lower resolution space, one typically applies some statistical classification scheme. Typical classifiers used in classical face recognition include  Linear Discriminant Analysis (LDA) \cite{bhat2014performance}, $ K $ Nearest Neighbor/Subspace (KNN/KNS) \cite{lee2005acquiring} and (Linear-kernel) Support Vector Machine (SVM) \cite{wright09facerecog}. These methods seem to work well when in a controlled environment. However, when parameters such as lighting or noise level changes, or when a subject has occluded parts of his/her face (like the addition of glasses), these methods often begin to struggle \cite{eldar12theoryapplic}.
+After projecting the images down to a lower resolution space, one typically applies some statistical classification scheme. Typical classifiers used in classical face recognition include  Linear Discriminant Analysis (LDA) \cite{bhat2014performance}, $ K $ Nearest Neighbor/Subspace (KNN/KNS) \cite{lee2005acquiring} and (Linear-kernel) Support Vector Machines (SVM) \cite{wright09facerecog}. These methods seem to work well when in a controlled environment. However, when parameters such as lighting or noise level changes, or when a subject has occluded parts of his/her face (like the addition of glasses), these methods often begin to struggle \cite{eldar12theoryapplic}.
 
 In this chapter we will introduce a new classification scheme called Sparse Representation-based Classification (SRC) \cite{wright09facerecog}. This is an alternative method to the LDA or KNN discussed above, but does not replace the dimensionality reduction. In this report, however, we will not discuss feature extraction in any more detail, but focus on the classification scheme. 
 
@@ -18,13 +18,15 @@ At first we must address a potential problem. All of the theory developed in \cr
 	\A = \begin{bmatrix}
 		\a_{1} & \a_{2} & \cdots & \a_{n}
 	\end{bmatrix} \in \R^{m\times n}
-	\quad\text{becomes}\quad 
+\]
+becomes
+\[
 	\a = \begin{bmatrix}
-		\a_{1} \\
-		\a_{2} \\
-		\vdots \\
-		\a_{n}
-	\end{bmatrix} \in \R^{mn}
+		\a_{1}^{T} &
+		\a_{2}^{T} &
+		\cdots &
+		\a_{n}^{T}
+	\end{bmatrix}^{T} \in \R^{mn}
 \]
 
 We begin by making an observation: if our training images of subject $ i $ is of varying illumination, and if we assume that they are all aligned correctly, we will expect a test image of subject $ i $ to be closely approximated by a linear combination of the test images. That is, for a new test image $ \y $ of subject $ i $, there exists $ k_{i} $ coefficients $ c_{1}, c_{2}, \ldots, c_{k_{i}}  \in \R $ (here, $ k_{i} $ is the number of images of subject $ i $) such that:
@@ -36,7 +38,7 @@ We begin by making an observation: if our training images of subject $ i $ is of
 	\label{eq:approxtestimagematrix}
 	\y \approx \mathbf{\Phi}_{i}\c_{i}
 \end{equation}
-This is of course assuming that $ i $ is known, which of course it is not. However this is easily solved by padding $ \c_i $ with zeros. This is safe to do, since we expect all the other coefficients to be $ 0 $ anyway (at least close to $ 0 $). Thus we arrive at the zero-padded version of $ \c_{i} $: \todo{Forenkle?}
+This is assuming that $ i $ is known, which of course it is not. However, we observe that we expect the test image to \textit{only} be a linear combination of the training images corresponding to the correct subject. This means that the coefficients corresponding to any other subject should be $ 0 $, or at lest very small. Thus we arrive at the zero-padded version of $ \c_{i} $:
 \begin{equation*}
 	\label{eq:c0def}
 	\c_{0} = \begin{bmatrix}~\cdots & \0^{T} & \c_{i}^{T} & \0^{T} & \cdots~\end{bmatrix}^{T} \in \R^{N}
@@ -67,7 +69,7 @@ Summarizing all of the above, we get the algorithm described in \cref{alg:src}.
 
 
 
-\begin{algorithm}[t]
+\begin{algorithm}[tb]
 	\caption{Sparse Representation-based Classification for face recognition}
 	\label{alg:src}
 	\begin{enumerate}
@@ -78,9 +80,10 @@ Summarizing all of the above, we get the algorithm described in \cref{alg:src}.
 		\item[] \textbf{Input:} A matrix of training images $ \mathbf{\Phi} \in \R^{mn\times N} $ of $ C $ persons, a test image $ \y\in\R^{N} $, and a tolerance $ \epsilon > 0 $.
 		\item Normalize the columns of $ \mathbf{\Phi} $ to have a $ \ell_{2} $ norm of $ 1 $
 		\item Solve the $ \ell_{1} $-minimization problem:
-		\[
+		\begin{equation}
 			\hat{\c}_{0} = \argmin_{\c} \norm{\c}_{1} ~\subjectto \norm{\mathbf{\Phi}\c - \y} \leq \epsilon
-		\]
+			\label{eq:src}
+		\end{equation}
 		\item Compute the residuals $ r_{i}(\y) = \norm{\y - \mathbf{\Phi}_{i}(\hat{\c}_{0})_{i}}_{2} $ for all $ i \in \indexset{C} $. Here $ \mathbf{\Phi}_{i} $ and $ (\hat{\c}_{0})_{i} $ denotes all the training images and estimated coefficients associated with person $ i $. 
 		\item[] \textbf{Output:} $ \hat{l_{i}} $ = identity of $ \y = \argmin_{i} r_{i}(\y) $  
 	\end{enumerate}
@@ -109,19 +112,20 @@ If a signal exhibits this property, we have that the following result holds:
 	\label{thm:errorcorr}
 	Fix any $ \delta>0 $, $ \rho<1 $. Suppose that $ \A $ is a random matrix with columns drawn independently from a multivariate normal distribution as such:
 	\[
-		\a_{i} \iid N\left(\boldsymbol{\mu}, \frac{\nu^{2}}{m}\mathbf{I}_{m}\right)~, \quad \norm{\boldsymbol{\mu}}_{2} = 1~, \quad \norm{\boldsymbol{\mu}}_{\infty} \leq C_{\mu}m^{-1/2}
+		\a_{i} \iid N\left(\boldsymbol{\mu}, \frac{\nu^{2}}{m}\mathbf{I}_{m}\right), ~ \norm{\boldsymbol{\mu}}_{2} = 1, ~ \norm{\boldsymbol{\mu}}_{\infty} \leq C_{\mu}m^{-1/2}
 	\]
 	for some constant $ C_{\mu} $. Assume that $ \nu $ is sufficiently small, that $ J \subset \indexset{m} $ is a uniform random subset of size $ \rho m $, that $ \boldsymbol{\sigma} \in \R^{m} $ with $ \boldsymbol{\sigma}_{J} $ $ \iid \text{Unif}(\set{-1, 1}) $ (independent of $ J $), that $ \boldsymbol{\sigma}_{\overline{J}} = \0 $ and that $ m $ is sufficiently large. Then with probability at least $ 1 - C e^{-\epsilon^{*}m} $ in $ A, J, \boldsymbol{\sigma} $, for all $ \x_{0} $ with $ \norm{\x_{0}}_{0} \leq \alpha^{*}m $ and any $ \mathbf{e}_{0} $ with signs and support $ (\boldsymbol{\sigma}, J) $, 
-	\begin{equation}
+	\begin{align*}
 		\label{eq:errorcorr}
-		(\x_{0}, \mathbf{e}_{0}) = \argmin_{(\x,\mathbf{e})} \norm{\x}_{1} + \norm{\mathbf{e}}_{1} \quad\subjectto \A\x + \mathbf{e} = \A\x_{0} + \mathbf{e}_{0}
-	\end{equation}
+		(\x_{0}, \mathbf{e}_{0}) = & \argmin_{(\x,\mathbf{e})} \norm{\x}_{1} + \norm{\mathbf{e}}_{1} \\
+                          & \subjto \A\x + \mathbf{e} = \A\x_{0} + \mathbf{e}_{0}
+	\end{align*}
 	and the minimizer is uniquely defined.
 \end{theorem}
 
-A proof of this theorem will not be given here, but is found in \cite{wright10dense} (and it is very technical). We will instead give a small interpretation of its consequences. 
+The proof of this theorem is very technical, and will not be given here. It can be found in \cite{wright10dense}. We will instead give a small interpretation of its consequences. 
 
-It is worth noting that many of the technical assumptions in \cref{thm:errorcorr} are present only to make the theorem provable. The main result is that we can recover a signal by using $ \ell_{1} $-minimization, even if the signal has some noise, and even if the noise is not sparse. However, for this to work we need our error and signal to exhibit certain properties, and the most important one is the proportional growth. 
+It is worth noting that many of the technical assumptions in \cref{thm:errorcorr} are present only to make the theorem provable.  The main result is that we can recover a signal by using $ \ell_{1} $-minimization, even if the signal has some noise, and even if the noise is not sparse. However, for this to work we need our error and signal to exhibit certain properties, and the most important one is the proportional growth. 
 
 Intuitively, we can think of the result this way: If our error is very dense, we need the signal to be very sparse, and if our signal is dense, we need a sparse error in order for the recovering scheme to work. 
 

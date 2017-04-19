@@ -1,5 +1,11 @@
 \chapter{Introduction}
-\todo[inline]{Write introduction}
+Traditional signal processing usually follows Shannon and Nyquist's sampling theorem. It states that a signal can be recovered perfectly if the sampling frequency is at least twice the highest frequency present in the signal.  However, this theorem assumes that the samples are taken with a uniform time interval, and that the reconstruction happens by interpolating the samples with sinc functions. 
+
+Compressive sensing is a new scheme for sampling and reconstructing which abandons these assumptions. It turns out that by placing different assumptions on the signal, and by using a different recovering strategy, we can recover our signal with less samples than the traditional theory suggests. 
+
+The field of compressive sensing has exploded in the last decade, after the initial publications by Cand{\`e}s, Tao, Romberg and Donoho \cite{candes2006near, candes2006robust, donoho2006compressed}. Some of the ideas and concepts have roots further back in time, but these publications marks the beginning of compressive sensing as a field of study. A lot of new theory has been developed for recovering such sparse signals. 
+
+During the development of this theory, one have found several applications of compressive sensing techniques beyond recovering undersampled signals. In this report, we will work more closely with one of these applications, namely facial recognition. Face recognition is perhaps one of the most studied problems in machine learning and statistical classification. Possibly because the traditional approaches still shows several weaknesses, as we will discuss more in \cref{sec:applications}, but also because of the human mind's extraordinary ability to recognize faces, even when key elements such as skin tone, hair color or length, facial hair or glasses changes. 
 
 In this report we will first give a general introduction to the basic concepts of compressed sensing, and then look at how these techniques can be applied to the face recognition problem. 
 
@@ -7,15 +13,15 @@ In this report we will first give a general introduction to the basic concepts o
 \section{Preliminaries and Notation}
 In this section we will introduce some of the necessary notation and concepts for this report. 
 
-Throughout the report we will denote vectors by boldface lower case letters, and matrices by boldface upper case letters. For a vector $ \x $, we will by $ x_{i} $ refer to the $ i $'th element in the vector. Similarly, for a matrix $ \A $, we will by $ \a_{i} $ refer to the $ i $'th  column of $ \A $, and by $ a_{i, j} $ denote the element on  column $ j $ and row $ i $.
+Throughout the report we will denote vectors by boldface lower case letters, and matrices by boldface upper case letters. For a vector $ \x $, we will by $ x_{i} $ refer to the $ i $'th element in the vector. Similarly, for a matrix $ \A $, we will by $ \a_{i} $ refer to the $ i $'th  column of $ \A $, and by $ a_{i, j} $ denote the element of $ \A $ at column $ j $ and row $ i $.
 
 Sets will be denoted by italic upper case letters, and the cardinality of a set $ S $ is denoted as $ \abs{S} $. The complement of a set $ S $ will be written as $ \overline{S} $. 
 
 \subsection{Norms}
-We begin with the definition of norms. 
+We will begin with the definition of norms. Even though the author suspect this to be known material, it is included for ease of reference later.
 
 \begin{definition} \label{def:norm}
-	Let $ V $ be a vector space over $ \K $.  A norm $ \norm{\cdot} $ on $ V $ is a function $ \norm{\cdot}\colon V \to\R $ such that
+	Let $ V $ be a vector space over a field $ \K $.  A norm $ \norm{\cdot} $ on $ V $ is a function $ \norm{\cdot}\colon V \to\R $ such that
 	\begin{subdef}
 		\item $ \norm{\v} \geq 0 $ for all $ \v \in V $ with $ \norm{\v} = \0 $ if and only if $ \v = \0 $
 		\item $ \norm{c\v} = \abs{c}\norm{\v} $ for all $ \v \in V $ and $ c \in \K $
@@ -38,9 +44,10 @@ We will not prove here that the $ \ell_{p} $-norms actually are norms, but this 
 	The $ \ell_{0} $ norm $ \norm{\cdot}_{0} $ is the number of non-zero entries in $ \v $.
 \end{definition}
 
-It is worth noting that the $ \ell_{0} $ norm is strictly speaking not a norm, since $ \norm{\cdot}_{0} $ does not fulfill axiom \textit{(ii)} of \cref{def:norm}. In fact, for all $ q<1 $, $ \norm{\cdot}_{q} $ is not a norm. Despite this, it is customary to refer to $ \norm{\cdot}_{0} $ as the $ \ell_{0} $ norm.
+It is worth noting that the $ \ell_{0} $ norm is strictly speaking not a norm, since $ \norm{\cdot}_{0} $ does not fulfill axiom \textit{(ii)} of \cref{def:norm}. In fact, for all $ q<1 $, $ \norm{\cdot}_{q} $ is not a norm, as $ \norm{\cdot}_{q} $ does not fulfill axiom \textit{(iii)} of \cref{def:norm} for any $ q \in (0, 1) $. Despite this, it is customary to refer to $ \norm{\cdot}_{0} $ as the $ \ell_{0} $ norm.
 
 \subsection{Support and Sparsity}
+As compressive sensing deals with the recovering of sparse vectors, we will need to define sparsity. Before we do that, we will introduce \textit{support}:
 
 \begin{definition} \label{def:support}
 	Let $ \v \in \Cx^{N} $. The support $ S $ of $ \v $ is defined as the index set of its non-zero entries, that is:
@@ -68,3 +75,4 @@ The final concept we will introduce is the notion of \textit{sparsity}:
 \begin{definition} A vector $ \v \in \Cx^{N} $ is said to be $ s $-sparse if it has no more than $ s $ non-zero entries. That is, $ \norm{\v}_{0} \leq s $
 \end{definition}
 
+Note that any vector supported on a set $ S $ with $ \abs{S} = s $ is $ s $-sparse. 

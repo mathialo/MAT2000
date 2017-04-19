@@ -1,4 +1,4 @@
-\documentclass[a4paper, article, oneside, USenglish, hidelinks]{memoir}
+\documentclass[a4paper, article, oneside, twocolumn, 10pt, USenglish, hidelinks]{memoir}
 
 % Drawing
 \usepackage{pgf,tikz}
@@ -17,17 +17,17 @@
 
 
 %% Fonts and typography
-\usepackage{lmodern}           % Latin Modern Roman
+%\usepackage{lmodern}           % Latin Modern Roman
 \usepackage[scaled]{beramono}  % Bera Mono (Bitstream Vera Sans Mono)
-\renewcommand{\sfdefault}{phv} % Helvetica
+%\renewcommand{\sfdefault}{phv} % Helvetica
 \usepackage[final]{microtype}  % Improved typography
 \usepackage{caladea}
 
-\pretitle{\begin{center}\color{title_color}\LARGE\sffamily\bfseries}                    % Title
+\pretitle{\begin{center}\color{title_color}\huge\sffamily}                    % Title
 \renewcommand{\abstractnamefont}{\color{title_color}\sffamily\bfseries}                 % Abstract
-\renewcommand*{\chaptitlefont}{\color{title_color}\Large\bfseries\sffamily\raggedright} % Chapter
-\setsecheadstyle{\color{title_color}\Large\bfseries\sffamily\raggedright}               % Section
-\setsubsecheadstyle{\color{title_color}\large\sffamily\raggedright}               % Section
+\renewcommand*{\chaptitlefont}{\color{title_color}\Large\sffamily\raggedright} % Chapter
+\setsecheadstyle{\color{title_color}\Large\sffamily\raggedright}               % Section
+\setsubsecheadstyle{\color{title_color}\large\sffamily\raggedright}          		    % Subsection
 
 
 %% small gap between paragraphs
@@ -111,50 +111,6 @@
 \usepackage{textcomp}  % Extra symbols
 \usepackage{lipsum}
 
-%% Code snippets
-\definecolor{source_blue}{HTML}{003399}
-\definecolor{source_brown}{HTML}{AAAA53}
-\definecolor{source_gray}{HTML}{F9F9F9}
-\definecolor{source_orange}{HTML}{E18A07}
-\definecolor{dkgreen}{rgb}{0,0.6,0}
-\usepackage{listings}  % Typesetting code
-\lstset{
-	basicstyle=\ttfamily\footnotesize,
-	breaklines=true,
-	keepspaces=true,
-	tabsize=4,
-	numbers=left,
-	numberstyle=\ttfamily\color{darkgray},
-	backgroundcolor=\color{source_gray},
-	rulecolor=\color{gray},
-	xleftmargin=2.7em,
-	frame=single,
-	framexleftmargin=2.4em,
-	showstringspaces=false,
-	literate={æ}{{\ae}}1{ø}{{\o}}1{å}{{\aa}}1
-}
-\newcommand{\pythonimport}[1]{
-	\lstinputlisting[
-	language=Python,
-	commentstyle=\color{source_brown}\ttfamily, 
-	morekeywords={True, False, as},
-	keywordstyle=\color{source_blue}\ttfamily,
-	stringstyle=\color{source_orange}]{#1}
-}
-\newcommand{\javaimport}[1]{
-	\lstinputlisting[
-	language=Java,
-	commentstyle=\color{source_brown}\ttfamily, 
-	morekeywords={String},
-	keywordstyle=\color{source_blue}\ttfamily,
-	stringstyle=\color{source_orange}]{#1}
-}
-\newcommand{\textimport}[1]{
-	\lstinputlisting{#1}
-}
-\usepackage{newfloat, caption}
-\DeclareFloatingEnvironment[fileext=cde,name={Code snippet}]{code}
-
 
 %% Bibliography
 \usepackage[backend = biber, style = alphabetic]{biblatex}
@@ -199,7 +155,8 @@
 
 \newcommand{\minimize}[1]{\underset{#1}{\text{minimize}}~}
 \newcommand{\maximize}[1]{\underset{#1}{\text{maximize}}~}
-\newcommand{\subjectto}{\quad\text{subject to}~}
+\newcommand{\subjectto}{\quad\subjto~}
+\DeclareMathOperator*{\subjto}{subject~to}
 
 
 %% New commands for sets
@@ -292,6 +249,13 @@
 \usepackage{ifdraft}
 \usepackage{enumitem}
 
+\makeatletter
+\renewcommand\footnoterule{%
+	\kern-3\p@
+	\hrule\@width \columnwidth
+	\kern2.6\p@}
+\makeatother
+
 \tolerance = 5000 % LaTeX er normalt streng når det gjelder linjebrytingen.
 \hbadness = \tolerance % Vi vil være litt mildere, særlig fordi norsk har så
 \pretolerance = 2000 % mange lange sammensatte ord.s
@@ -307,14 +271,26 @@
 \author{Mathias Lohne}
 \date{Spring, 2017}
 
+\setcounter{topnumber}{1}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{1}
+
 
 \begin{document}
-\maketitle
 
-\begin{abstract}
-	\noindent
-	\todo[inline]{Brief summary of the paper}
-\end{abstract}
+%\begin{abstract}
+%	\todo[inline]{brief summary}
+%\end{abstract}
+	
+\twocolumn[
+\begin{@twocolumnfalse}
+	\maketitle
+%	\begin{abstract}
+%		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+%	\end{abstract}
+	\vspace{30pt}
+\end{@twocolumnfalse}
+]
 
 \begin{KeepFromToc}
 %	\tableofcontents
@@ -329,15 +305,6 @@
 
 
 \printbibliography
-
-%\newpage
-%\appendix
-%\chapter{Code listings}
-%\section{For \cref{fig:l1min}}
-%\pythonimport{code/CStest.py}
-%\newpage
-%\section{For \cref{fig:dwt_sparsifying}}
-%\pythonimport{figs/make_wavelet_example.py}
 
 
 \end{document}

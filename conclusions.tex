@@ -1,2 +1,8 @@
-\chapter{Conclusions}
-\todo[inline]{results, consequences, etc}
+\vspace{-6pt}\chapter{Conclusions}
+In this report we have outlaid some of the basic theory of compressive sensing, such as how many samples that are necessary in order to be able to recover the solution, how one can guarantee that the correct solution can be recovered using $ \ell_{1} $ optimization, and how to adapt this theory to fit problems when the desired solution is not sparse in its original form. 
+
+Further we have seen that these techniques of sparse recovery via $ \ell_{1} $ minimization can be used to develop a classification scheme well suited for facial recognition. The SRC introduced in \cite{wright09facerecog} seems to perform very well, and is more stable in regard to feature extraction, occlusion and corruption than more classical methods such as NN, NS or linear-kernel SVM. 
+
+However, as is often the case for compressive sensing, there are some problems regarding runtime and memory usage which must be overcome in order to do a full-scale implementation of this classification scheme. At the current state of minimization algorithms and computational power, the SRC might be unfavorable due to the time required to do a single classification. 
+
+

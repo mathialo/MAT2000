@@ -1,15 +1,30 @@
 \chapter{Practical Implementation}
 We now shift our attention away from the purely theoretical aspect, and towards the practical side. In this chapter we will seek to answer two main questions: How can a face recognition system using the SRC described in \cref{sec:src} be implemented? And how does it perform compared to the classical, state-of-the-art methods? We will begin by addressing the latter, and then look at some problems that arise when implementing the system.
 
-In order to implement and test a face recognition system, one will need a database of faces to test on. Many such databases exists, and some include the CMU multi-pie, the Yale database (and its successor, the extended Yale B database) and the AR Face Database. 
-
+In order to implement and test a face recognition system, one will need a database of faces to test on. Many such databases exists, and some include the CMU Multi-PIE, the Yale database (and its successor, the extended Yale B database) and the AR Face Database. 
+\begin{table*}[t]
+	\centering
+	\renewcommand{\arraystretch}{1.2}
+	\begin{tabular}{r | c c c c}
+		& \multicolumn{4}{l}{\quad Feature dimension}                                 \\
+		Classifier & $ \quad30\quad $ & $ \quad56\quad $ & $ \quad120\quad $ & $ \quad504\quad $ \\ \hline
+		SRC & $ 0.125 $        & $ 0.083 $        & $ 0.060 $         & $ 0.035 $         \\
+		NN & $ 0.229 $        & $ 0.165 $        & $ 0.128 $         & $ 0.093 $         \\
+		NS & $ 0.110 $        & $ 0.096 $        & $ 0.081 $         & $ 0.066 $         \\
+		SVM & $ 0.280 $        & $  0.150 $       & $ 0.060 $         & $ 0.023 $
+	\end{tabular}
+	\renewcommand{\arraystretch}{1}
+	\caption{Test error rates reported in \cite{wright09facerecog} for the SRC, NN, NS and SVM using the Laplacian faces scheme for feature extraction, and using the extended Yale B database}
+	\label{table:errorrates}
+	\vspace{4pt}\hrule
+\end{table*}
 
 \section{Comparison with Classical Methods}
 Now that we have introduced a new classifier for face recognition, an immediate question becomes: Why develop a new classification scheme based on compressive sensing when there already exists multiple statistical classifiers suitable for face recognition? 
 
 In the field of statistical and machine learning, one studies, among other things, different classifiers, such as the LDA, KNN or SVM discussed earlier. Typically, we have that for one specific application, different classifiers will perform differently. Thus, for a given application, we can rate how the different classifiers perform. A common metric for classification performance is to observe the \textit{test error rate}.
 
-In order to precisely test the accuracy of a classification model, we need some testing data independent from the training data. Typically, this is achieved by dividing the total data available into two sets: a training set used to build the model, and a test set used to test the model. For our case, we will split our set of images $ \set{(\phi_{i}, l_{i})}_{i=1}^{N} $ in two, and make sure that for each person $ i $, we have equally many images of $ i $ in the training and the testing set. In the rest of this section, we will by $ I \subset \indexset{N} $ denote the set of indices for the training images, and by $ J = \indexset{N} \setminus I $ denote the set of indexes for the testing images. 
+In order to precisely test the accuracy of a classification model, we need some testing data independent from the training data. Typically, this is achieved by dividing the total data available into two sets: a training set used to build the model, and a test set used to test the model. For our case, we will split our set of images $ \set{(\phi_{i}, l_{i})}_{i=1}^{N} $ in two, and make sure that for each person $ i $, we have equally many images of $ i $ in the training and the testing set. In the rest of this section, we will by $ I \subset \indexset{N} $ denote the set of indices for the training images, and by $ J = \indexset{N} \setminus I $ denote the set of indices for the testing images. 
 
 Given a model and a set of testing images, the \textit{test error rate} is given as
 \begin{equation}
@@ -18,28 +33,13 @@ Given a model and a set of testing images, the \textit{test error rate} is given
 \end{equation}
 where $ \hat{l_{i}} $ is the predicted label of the image, $ l_{i} $ is the true label of the image, and $ \mathcal{I} $ denotes the indicator function. A good classifier is one for which the test error rate is small \cite[Section~2.2]{ISLR}.
 
-An empirical comparison of the SRC with the more classical methods NN (ie: KNN with $ K = 1 $), NS (KNS with $ K=1 $) and linear-kernel SVM is found in \cite{wright09facerecog}. In this comparison, the researchers used the \textit{Extended Yale B Database} consisting of $ 2\,414 $ images of $ 38 $ individuals, as well as the \textit{AR database} consisting of over $ 4\,000 $ images of 126 individuals. For each subject, they used half of the images for training, and half of the images for testing. Then they paired up the different classifiers with different feature extraction and feature dimensions, and compared their test error rate\footnote{In \cite{wright09facerecog} they actually talk about \textit{recognition rate}, which is $ 1 - $ test error rate. My guess would be that the authors are the \textit{``glass is half-full''}-kind of people.}.
+An empirical comparison of the SRC with the more classical methods NN (ie: KNN with $ K = 1 $), NS (KNS with $ K=1 $) and the linear-kernel SVM is found in \cite{wright09facerecog}. In this comparison, the researchers used the \textit{Extended Yale B Database} consisting of $ 2\,414 $ images of $ 38 $ individuals, as well as the \textit{AR database} consisting of over $ 4\,000 $ images of 126 individuals. For each subject, they used half of the images for training, and half of the images for testing. Then they paired up the different classifiers with different feature extraction and feature dimensions, and compared their test error rate\footnote{In \cite{wright09facerecog} they actually talk about the \textit{recognition rate}, which would be $ 1 - $ test error rate. My guess is that the authors are the \textit{``glass is half-full''}-kind of people.}.
 
-\begin{table}[t]
-	\centering
-	\renewcommand{\arraystretch}{1.2}
-	\begin{tabular}{r | c c c c}
-		           & \multicolumn{4}{l}{\quad Feature dimension}                                 \\
-		Classifier & $ \quad30\quad $ & $ \quad56\quad $ & $ \quad120\quad $ & $ \quad504\quad $ \\ \hline
-		       SRC & $ 0.125 $        & $ 0.083 $        & $ 0.060 $         & $ 0.035 $         \\
-		        NN & $ 0.229 $        & $ 0.165 $        & $ 0.128 $         & $ 0.093 $         \\
-		        NS & $ 0.110 $        & $ 0.096 $        & $ 0.081 $         & $ 0.066 $         \\
-		       SVM & $ 0.280 $        & $  0.150 $       & $ 0.060 $         & $ 0.023 $
-	\end{tabular}
-	\renewcommand{\arraystretch}{1}
-	\caption{Test error rates reported in \cite{wright09facerecog} for the SRC, NN, NS and SVM using the Laplacian faces scheme for feature extraction, and using the extended Yale B database}
-	\label{table:errorrates}
-	\vspace{4pt}\hrule
-\end{table}
 
-We have included some of the results from \cite{wright09facerecog} in \cref{table:errorrates}. We have concentrated on the Laplacian faces scheme for feature extraction, as this seemed to perform well with all the different classifiers. As one can see from the table, the SRC performs quite well. 
 
-An even more impressive result appears when the different classifiers is applied to occluded or corrupted images. For images where parts of the face are occluded, the researchers found that the test error rate was below $ 0.02 $, even when up to $ 30\% $ of the face where occluded. At $ 40\% $ occlusion the test error rate increased to $ 0.1 $, and for $ 50\% $ they reported a test error rate of $ 0.35 $. Meanwhile, the researchers reported a test error rate of $ > 0.2 $ at $ 30\% $ occlusion for the nearest-neighbor methods, and at $ 50\% $ they reported a test error rate between $ 0.5 $ and $ 0.7 $. Similar results were found for corrupted images. 
+We have included some of the results from \cite{wright09facerecog} in \cref{table:errorrates}. We have concentrated on the Laplacian faces scheme for feature extraction, as this seemed to perform well with all the different classifiers. As one can see from the table, the SRC performs quite well. It is also worth noting that the performance of the SRC varies less from the choice of feature extraction than compared to the other classifiers.
+
+An even more impressive result appears when the different classifiers is applied to occluded or corrupted images. For images where parts of the face are occluded, the researchers found that the test error rate was below $ 0.02 $, even when up to $ 30\% $ of the face were occluded. At $ 40\% $ occlusion the test error rate increased to $ 0.1 $, and for $ 50\% $ they reported a test error rate of $ 0.35 $. Meanwhile, the researchers reported a test error rate of $ > 0.2 $ at $ 30\% $ occlusion for the nearest-neighbor methods, and at $ 50\% $ they reported a test error rate between $ 0.5 $ and $ 0.7 $. Similar results were found for corrupted images. 
 
 
 
@@ -54,9 +54,9 @@ We will begin by looking at how the runtime of \cref{alg:src} will increase as t
 \end{definition}
 \noindent We can think of Big-O as an upper bound on the true runtime.
 
-Step 1 and 3 of \cref{alg:src} are obviously linear-time operations. More precisely, they have a runtime of  $ \bigo(N) $ and $ \bigo(C) $ respectively. The bottleneck of the runtime is thus step 2. In \cref{sec:basisasLP} we saw how \eqref{eq:P1} could be recast as a LP problem. However, a famous result due to Klee and Minty renders this more or less useless. They showed that Simplex method using the largest-coefficient pivoting rule uses $ \bigo(2^{n}) $ pivots worst case, where $ n $ is the number of decision variables \cite[Section~4.4]{vanderbei14linprog}. For our case this means that using the simplex method to implement \cref{alg:src} will have a worst case runtime of $ \bigo(2^{N}) $.
+Step 1 and 3 of \cref{alg:src} are obviously linear-time operations. More precisely, they have a runtime of  $ \bigo(N) $ and $ \bigo(C) $ respectively. The bottleneck of the runtime is thus step 2. In \cref{sec:basisasLP} we saw how \eqref{eq:P1} could be recast as a LP problem. However, a famous result due to Klee and Minty renders this more or less useless. They showed that the Simplex method using the largest-coefficient pivoting rule uses $ \bigo(2^{n}) $ pivots worst case, where $ n $ is the number of decision variables \cite[Section~4.4]{vanderbei14linprog}. For our case this means that using the simplex method to implement \cref{alg:src} will have a worst case runtime of $ \bigo(2^{N}) $.
 
-Various interior point methods exists, such as the path-following method. This algorithm uses newtons method to iteratively find better and better approximations to the optimal solution. However, even though the number of iterations no longer has exponential growth, since each iteration typically uses $ \bigo(N^{2}) $ operations, this too is to slow for our case \cite[Section~12.6]{eldar12theoryapplic}. This is because in a real world example, we will a very large number of training images $ N $.
+Various interior point methods exists, such as the path-following method. This algorithm uses Newton's method to iteratively find better and better approximations to the optimal solution. However, even though the number of iterations no longer has exponential growth, since each iteration typically uses $ \bigo(N^{2}) $ operations, this too is to slow for our case \cite[Section~12.6]{eldar12theoryapplic}. This is because in a real world example, we will a very large number of training images $ N $.
 
 The last algorithm we will look at is the orthogonal matching pursuit used to create \cref{fig:l1min}. This algorithms solves a series of least-squares approximations. This too is an approach that scales badly, which is why it's mostly used for small problems \cite[Secion~3.2]{foucart13intro}.
 
@@ -67,9 +67,14 @@ It is worth noting that some optimization algorithms with better per-iteration r
 \subsection{Memory Usage}
 As we now have seen, the issue with runtime can be somewhat dealt with. Still, another issue remains, and that is memory usage. 
 
+Digital images without compression uses a lot of disk space. A one megapixel gray-scale image, using 8 bits to encode the light intensity, will take up 1 megabyte of disk space. That in itself is not too much, but as the database of images grow, the sensing matrix $ \mathbf{\Phi} $ quickly becomes very large. For the extended Yale B database, consisting of over 2400 images, we will have that $ \mathbf{\Phi} $ takes up 1.2 gigabytes of disk space, assuming that we store the images in the discussed format, and that half of the available data is used for training. For the AR database this grows to roughly 2 gigabytes, and for the enormous CMU Multi-PIE database we will have a sensing matrix of over 350 gigabytes. 
 
-\todo[inline]{size of data}
-\todo[inline]{gange med matrise, vs å allokere hele mat.}
+It is clear that it is not feasible to allocate such matrices in the memory. Hence we will need a way to multiply the matrix with a vector (as one needs to do in the constraints of the minimization problem in \eqref{eq:src}) without allocating the matrix in memory. Results from numerical linear algebra tells us that this is possible. A simple way to illustrate how we can avoid allocating the whole matrix is to notice that we only need one row at a time. Thus, we can allocate only $ N $ bytes of memory space, instead of $ mnN $. Better approaches exist, but we will not go into any more detail in this report. 
+
+Feature extraction will also help. Typically, before constructing the database of training images, one applies one of the feature extraction schemes mentioned earlier. I this way we can reduce the size of each image down even as low as 120 pixels \cite[Section~12.2]{eldar12theoryapplic}.
+
+Even though a combination of these techniques will help, the amount of data required for robust face recognition using the SRC classification scheme remains an issue. 
+
 
 
 
