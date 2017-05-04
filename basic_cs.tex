@@ -12,13 +12,13 @@ We will introduce the basic idea of compressive sensing with an example quite si
 
 The naive approach to finding these coins would be to weigh every one of them with an electronic weight, and detect the coins that are off. In other words, we would have to do as many measurements as there are coins. But what if we weighed more than one coin at a time?
 
-Suppose, to the contrary, that we would include 50 coins in every weighing. The recorded weight would be the sum of all the included coins. Would we be able to make do with less weighings than 100? Say if we for example made 20 measurements, and recorded only the deviation from the expected weight. This would lead to the following system of equations:
+Suppose, to the contrary, that we would include, for example, half of the coins in every weighing. The recorded weight would be the sum of all the included coins. Would we be able to make do with less weighings than 100? Say if we for example made 20 measurements, and recorded only the deviation from the expected weight. This would lead to the following system of equations:
 \[
 	\A\x = \y
 \]
 Here $ \A \in \R^{20 \times 100} $ is a matrix where each row corresponds to one weighing, and the elements $ a_{i,j} $ is either $ 1 $ or $ 0 $, depending on whether coin $ j $ was included in weighing $ i $ or not, respectively. The vector $ \y \in \R^{20} $ is our measurement vector, and $ \x \in \R^{100} $ is the solution to our problem. 
 
-Unfortunately, since $ \A $ has far more columns than rows, this system is underdetermined, meaning that solving this system the old-fashioned way yields an infinite set of solutions. 
+Unfortunately, since $ \A $ has far more columns than rows, this system is underdetermined, meaning that solving this system yields an infinite set of solutions. 
 
 Here comes the key idea of compressive sensing: we will assume that our solution vector $ \x $ is \textit{sparse}. In our example it would make sense to assume that most coins are not counterfeit, so the solution vector $ \x $ (consisting of deviations from the expected weight) would mostly have elements equal to $ 0 $. Hence, we want to choose the solution from the solution space of $ \A\x = \y $ with the smallest amount of non-zero elements.
 
@@ -31,7 +31,7 @@ The rest of this chapter will consider how to find the sparsest solution in prac
 
 
 \section{The General Setting}
-As we now have seen, if we assume that our solution vector $ \x $ is the sparsest solution $ \z $ to the system of equations $ \A\z = \y $, there is hope to find a unique solution even though our system of equations is underdetermined. In \cref{sec:minimum_measurements} we will look at when we have unique solutions up to a given sparsity $ s $, but for now we will only consider that minimizing the number of non-zero elements will reduce the solution space drastically. Formally we can write this as an optimization problem as follows:
+As we will soon see, if we assume that our solution vector $ \x $ is the sparsest solution $ \z $ to the system of equations $ \A\z = \y $, there is hope to find a unique solution even though our system of equations is underdetermined. In \cref{sec:minimum_measurements} we will look at when we have unique solutions up to a given sparsity $ s $, but for now we will only consider that minimizing the number of non-zero elements will reduce the solution space drastically. Formally we can write this as an optimization problem as follows:
 
 \begin{equation}
 	\minimize{\z \in \Cx^{N}} \norm{\z}_0
@@ -54,7 +54,7 @@ The question then becomes, which norm do we use? It can be shown that  as $ p $ 
 	\centering
 	%	\hrule\vspace{10pt}
 	\includegraphics[width=\textwidth]{figs/figure_1h.pdf}
-	\caption{\textit{Left}: The original $ 5 $-sparse vector $ x \in \R^{100} $. \textit{Center}: The sensed vector $ y \in \R^{20} $. \textit{Right}: Result of $ \ell_{1} $-minimization}
+	\caption{\textit{Left}: The original $ 5 $-sparse vector $ \x \in \R^{100} $. \textit{Center}: The sensed vector $ \y \in \R^{20} $. \textit{Right}: Result of $ \ell_{1} $-minimization}
 	\label{fig:l1min}
 	\vspace{4pt}\hrule
 \end{figure*}
@@ -86,7 +86,7 @@ This is also called \textit{basis pursuit}. We will later discuss how one can gu
 
 An illustration of this procedure is found in \cref{fig:l1min}. In this example we have drawn a random $ 5 $-sparse vector $ \x \in \R^{100} $. Using a random sensing matrix $ \A \in \R^{20\times 100} $ where the elements $ a_{i,j} \iid N(0, 1) $ for all $ i,j $,  we obtain our sampled vector $ \y = \A\x \in\R^{20} $. We have then applied Vegard Antun's implementation of the \textit{Orthogonal Matching Pursuit} algorithm described in \cite[Section~3.2]{foucart13intro} to solve \eqref{eq:P1}, giving us our reconstructed vector.\nocite{antunAlgs}
 
-Because we have used a random sensing matrix, there is no guarantee that basis pursuit works. We only have a certain probability that the reconstruction yields the correct result. Running the experiment described above several times actually gives the wrong result some times. This is because there is only a certain probability that our random matrix $ \A $ exhibits properties such as the Null Space Property, which is necessary in order for basis pursuit to work. 
+Because we have used a random sensing matrix, there is no guarantee that basis pursuit works. There exists results which states that there is a certain probability that the reconstruction yields the correct result, (ie, that $ \A $ exibits the NSP, which will be defined later). Running the experiment described above several times actually gives the wrong result some times. 
 
 
 
@@ -176,7 +176,7 @@ We will start by looking at how we can ensure unique $ s $-sparse solutions to t
 We begin by looking at how many measurements we need in order to ensure that \eqref{eq:P0} has only one $ s $-sparse solution. We begin by stating the main result of this section:
 \begin{theorem}
 	\label{thm:minimum_measurements}
-	If the following equality holds: \[ \set{\z \in \Cx^{N} \st \A\z = \A\x, \norm{\z}_{0} \leq s}  = \set{\x} \] That is, $ \x $ is the unique $ s $-sparse solution to \eqref{eq:P0}, then the number of measurements $ m $ must satisfy $ m \geq 2s $.
+	If the following equality holds: \[ \set{\z \in \Cx^{N} \st \A\z = \A\x, \norm{\z}_{0} \leq s}  = \set{\x} \] That is, if $ \x $ is the unique $ s $-sparse solution to \eqref{eq:P0}, then the number of measurements $ m $ (ie, the number of rows in $ \A $) must satisfy $ m \geq 2s $.
 \end{theorem}
 
 Before proving this theorem, we need the following lemma:
@@ -194,7 +194,7 @@ We will not prove \cref{lemma:uniquesol_linind} in this report, but a proof can 
 	which concludes the proof.
 \end{proof}
 
-\cref{thm:minimum_measurements} only gives a condition which must be satisfied in order for \eqref{eq:P0} to have unique solutions, but no guarantee that the solution is unique if the number of measurements is greater than $ 2s $. However, it can be proven that there exists matrices that is guaranteed to have unique $ s $-sparse solutions to \eqref{eq:P0} if $ m \geq 2s $. One such matrix is the matrix consisting of the first $ 2s $ rows of the DFT matrix.
+\cref{thm:minimum_measurements} only gives a condition which must be satisfied in order for \eqref{eq:P0} to have unique solutions, but no guarantee that the solution is unique if the number of measurements is greater than $ 2s $ (ie, it is necessary, but not sufficient). However, it can be proven that there exist matrices that is guaranteed to have unique $ s $-sparse solutions to \eqref{eq:P0} if $ m \geq 2s $. One such matrix is the matrix consisting of the first $ 2s $ rows of the DFT matrix.
 
 \begin{theorem}
 	\label{thm:uniquesol_dft}
@@ -338,11 +338,11 @@ In this section we will first introduce \textit{compressi\-bility} to ease the s
 
 
 \subsection{Compressibility}
-The general framework developed in \cref{sec:goodmatrices} is designed for \textit{sparse} vectors without any errors. What if our signal is almost sparse, but not quite? Or what if the sampled signal is slightly distorted? In this section we will briefly cover how we can extend the theory presented in \cref{sec:goodmatrices} to cover such cases.
+%The general framework developed in \cref{sec:goodmatrices} is designed for \textit{sparse} vectors without any errors. What if our signal is almost sparse, but not quite? Or what if the sampled signal is slightly distorted? In this section we will briefly cover how we can extend the theory presented in \cref{sec:goodmatrices} to cover such cases.
 
 %In order to answer this precisely we first need to specify what we mean with \textit{almost sparse}. This is where the notion of compressibility comes in. 
-First, we will introduce the notion of compressibility.
-A compressible vector is a vector where most entries is \textit{almost} zero. To more precisely define a compressible vector, we must first define what we mean by almost zero:
+%First, we will introduce the notion of compressibility.
+A compressible vector is a vector where most entries are \textit{almost} zero. To more precisely define a compressible vector, we must first define what we mean by almost zero:
 \begin{definition} \label{def:compressibility}
 	For any $ p > 0 $, the $ \ell_{p} $-error of best $ s $-term approximation to a vector $ \x \in \Cx^{N} $ is defined by
 	\(
@@ -387,7 +387,7 @@ The Haar Discrete Wavelet Transform (Haar DWT) is essentially a change of coordi
 
 
 
-We could assume that this change of coordinates have been done prior to the sensing, so that our solution vector $ \x = \mathbf{\Psi}\x' $ is sparse. Here $ \x' $ is the underlying non-sparse solution. However, we will instead include the change of coordinates in our sensing matrix $ \A $. Hence the sensing matrix becomes the following product:
+We could assume that this change of coordinates has been done prior to the sensing, so that our solution vector $ \x = \mathbf{\Psi}\x' $ is sparse. Here $ \x' $ is the underlying non-sparse solution. However, we will instead include the change of coordinates in our sensing matrix $ \A $. Hence the sensing matrix becomes the following product:
 \begin{equation}
 	\label{eq:sensingmatrix_composition}
 	\A = \mathbf{P}_{\Omega}\mathbf{\Phi}\mathbf{\Psi}^{-1}

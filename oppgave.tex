@@ -18,15 +18,17 @@
 
 %% Fonts and typography
 %\usepackage{lmodern}           % Latin Modern Roman
-\usepackage[scaled]{beramono}  % Bera Mono (Bitstream Vera Sans Mono)
-%\renewcommand{\sfdefault}{phv} % Helvetica
+%\usepackage[scaled]{beramono}  % Bera Mono (Bitstream Vera Sans Mono)
+\renewcommand{\sfdefault}{phv} % Helvetica
 \usepackage[final]{microtype}  % Improved typography
 \usepackage{caladea}
+\usepackage{url}
+\urlstyle{tt}
 
-\pretitle{\begin{center}\color{title_color}\huge\sffamily}                    % Title
+\pretitle{\begin{center}\color{title_color}\huge\bfseries\sffamily}                     % Title
 \renewcommand{\abstractnamefont}{\color{title_color}\sffamily\bfseries}                 % Abstract
-\renewcommand*{\chaptitlefont}{\color{title_color}\Large\sffamily\raggedright} % Chapter
-\setsecheadstyle{\color{title_color}\Large\sffamily\raggedright}               % Section
+\renewcommand*{\chaptitlefont}{\color{title_color}\bfseries\Large\sffamily\raggedright} % Chapter
+\setsecheadstyle{\color{title_color}\Large\sffamily\bfseries\raggedright}               % Section
 \setsubsecheadstyle{\color{title_color}\large\sffamily\raggedright}          		    % Subsection
 
 
@@ -120,7 +122,6 @@
 %% Cross references
 \usepackage{varioref}
 \usepackage{hyperref}
-\urlstyle{sf}
 \usepackage[nameinlink, capitalize, noabbrev]{cleveref}
 
 
@@ -137,6 +138,7 @@
 %% Numbering within chapter
 \counterwithin{equation}{chapter}
 \counterwithin{figure}{chapter}
+\counterwithin{table}{chapter}
 
 %% numbering of algorithms
 \usepackage[chapter]{algorithm}
@@ -248,6 +250,8 @@
 %\renewcommand{\qedsymbol}{\(\blacksquare\)}
 \usepackage{ifdraft}
 \usepackage{enumitem}
+\renewcommand{\chaptername}{Section}
+\crefformat{chapter}{Section~#1#2#3}
 
 \makeatletter
 \renewcommand\footnoterule{%

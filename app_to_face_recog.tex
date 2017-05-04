@@ -7,7 +7,7 @@ After projecting the images down to a lower resolution space, one typically appl
 
 In this chapter we will introduce a new classification scheme called Sparse Representation-based Classification (SRC) \cite{wright09facerecog}. This is an alternative method to the LDA or KNN discussed above, but does not replace the dimensionality reduction. In this report, however, we will not discuss feature extraction in any more detail, but focus on the classification scheme. 
 
-In order to do face recognition, we first need a set of $ N $ labeled \textit{training images} $ \set{(\phi_{i}, l_{i})}_{i=1}^{N} $. This is a set of images which our algorithm will use to learn what the different people we want to recognize looks like. Here, $ (\phi_{i}, l_{i}) $ denotes the tuple consisting of the $ i $'th image $ \phi_{i} $, and a label $ l_{i} \in \set{1, 2, \ldots, C} $ indicating which of the $ C $ subjects the image $ \phi_{i} $ is of. The task og the system is then, given a new test image $ \y $, to say which of the $ C $ subjects is pictured in $ \y. $
+In order to do face recognition, we first need a set of $ N $ labeled \textit{training images} $ \set{(\phi_{i}, l_{i})}_{i=1}^{N} $. This is a set of images which our algorithm will use to learn what the different people we want to recognize look like. Here, $ (\phi_{i}, l_{i}) $ denotes the tuple consisting of the $ i $'th image $ \phi_{i} $, and a label $ l_{i} \in \set{1, 2, \ldots, C} $ indicating which of the $ C $ subjects the image $ \phi_{i} $ is of. The task og the system is then, given a new test image $ \y $, to say which of the $ C $ subjects is pictured in $ \y. $
 
 
 
@@ -33,7 +33,8 @@ We begin by making an observation: if our training images of subject $ i $ is of
 \begin{equation}
 	\label{eq:approxtestimage}
 	\y \approx \sum_{j \st l_{j} = i} \phi_{j}c_{j}
-\end{equation}We note that if we define $ \c_{i} \in \R^{k_{i}} $ to be the vector of all the coefficients, and $ \mathbf{\Phi}_{i} \in \R^{mn \times k_{i}} $ to be the matrix consisting of all the corresponding images as columns, we can rewrite \eqref{eq:approxtestimage} as:
+\end{equation}
+We note that if we define $ \c_{i} \in \R^{k_{i}} $ to be the vector of all the coefficients, and $ \mathbf{\Phi}_{i} \in \R^{mn \times k_{i}} $ to be the matrix consisting of all the corresponding images as columns, we can rewrite \eqref{eq:approxtestimage} as:
 \begin{equation}
 	\label{eq:approxtestimagematrix}
 	\y \approx \mathbf{\Phi}_{i}\c_{i}
@@ -84,16 +85,16 @@ Summarizing all of the above, we get the algorithm described in \cref{alg:src}.
 			\hat{\c}_{0} = \argmin_{\c} \norm{\c}_{1} ~\subjectto \norm{\mathbf{\Phi}\c - \y} \leq \epsilon
 			\label{eq:src}
 		\end{equation}
-		\item Compute the residuals $ r_{i}(\y) = \norm{\y - \mathbf{\Phi}_{i}(\hat{\c}_{0})_{i}}_{2} $ for all $ i \in \indexset{C} $. Here $ \mathbf{\Phi}_{i} $ and $ (\hat{\c}_{0})_{i} $ denotes all the training images and estimated coefficients associated with person $ i $. 
-		\item[] \textbf{Output:} $ \hat{l_{i}} $ = identity of $ \y = \argmin_{i} r_{i}(\y) $  
+		\item Compute the residuals $ r_{i}(\y) = \norm{\y - \mathbf{\Phi}_{i}(\hat{\c}_{0})_{i}}_{2} $ for all $ i \in \indexset{C} $. Here $ \mathbf{\Phi}_{i} $ and $ (\hat{\c}_{0})_{i} $ denote all the training images and estimated coefficients associated with person $ i $. 
+		\item[] \textbf{Output:} $ \hat{l_{\y}} $ = identity of $ \y = \argmin_{i} r_{i}(\y) $  
 	\end{enumerate}
 \end{algorithm}
 
 
 \section{Addressing Corruption and Occlusion}
-A common problem when dealing with numerical problems of any sort is the introduction of round-off errors. A typical computer today uses 64 bit processors, this means that the processor (and all the other components) can store and process 64 binary digits of a number. Any real number must then be approximated by the closest number possible to write with 64 binary digits. Typically, this introduces a small error $ \epsilon_{i} < 2^{-53} \approx 10^{-16} $ for every pixel in the image. In addition to round-off errors, all image sensors introduce some image noise. 
+A common problem when dealing with numerical problems of any sort is the introduction of round-off errors. A typical computer today uses 64 bit processors, this means that the processor (and all the other components) can store and process 64 binary digits of a number. Any real number must then be approximated by the closest number possible to write with 64 binary digits. Typically, this introduces a small error $ \epsilon_{i} < 2^{-53} \approx 10^{-16} $ for every pixel in the image. In addition to round-off errors, all image sensors introduce some noise. 
 
-In addition to uniform noise, another problem we have to address is occlusion. A common problem with many of the classical face recognition systems is their incapability of dealing with occlusion. If a subject puts on a pair of sunglasses, let his/hers hair grow, cuts his beard, or so forth, an ideal system should still be able to classify the subject correctly.
+In addition to noise, another problem we have to address is occlusion. A common problem with many of the classical face recognition systems is their incapability of dealing with occlusion. If a subject puts on a pair of sunglasses, let his/hers hair grow, cuts his beard, or so forth, an ideal system should still be able to classify the subject correctly.
 
 
 \begin{definition}
@@ -125,9 +126,9 @@ If a signal exhibits this property, we have that the following result holds:
 
 The proof of this theorem is very technical, and will not be given here. It can be found in \cite{wright10dense}. We will instead give a small interpretation of its consequences. 
 
-It is worth noting that many of the technical assumptions in \cref{thm:errorcorr} are present only to make the theorem provable.  The main result is that we can recover a signal by using $ \ell_{1} $-minimization, even if the signal has some noise, and even if the noise is not sparse. However, for this to work we need our error and signal to exhibit certain properties, and the most important one is the proportional growth. 
+It is worth noting that many of the technical assumptions in \cref{thm:errorcorr} are present only to make the theorem provable. Some of them are reasonable, and quite intuitive, such as the assumption of proportional growth. Others, like the assumption that the signs $ \boldsymbol{\sigma} $ is uniformly random, is rather unrealistic. 
 
-Intuitively, we can think of the result this way: If our error is very dense, we need the signal to be very sparse, and if our signal is dense, we need a sparse error in order for the recovering scheme to work. 
+The main result is that we can recover a signal by using $ \ell_{1} $-minimization, even if the signal has some noise, and even if the noise is not sparse. However, for this to work we need our error and signal to exhibit certain properties, and the most important one is the proportional growth. The intuitive interpretation of these assumptions is that if our error is very dense, we need the signal to be very sparse, and if our signal is dense, we need a sparse error in order for the recovering scheme to work. 
 
 One last problem we will not look into is misalignment. Usually, images of faces are not perfectly aligned and cropped, so a fully functioning face recognition system should be able to deal with misaligned images. A more in-depth look at this can be found in Section~12.5 of \cite{eldar12theoryapplic}.
 

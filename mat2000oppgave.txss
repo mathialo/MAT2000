@@ -1,10 +1,10 @@
 [InternalPDFViewer]
-Embedded=true
-File=oppgave.pdf
+Embedded=false
+File=
 
 [Session]
 Bookmarks=@Invalid()
-CurrentFile=basic_cs.tex
+CurrentFile=../presentasjon/facerecog_cs_beamer.tex
 File0\Col=11
 File0\FileName=oppgave_biblio.bib
 File0\FirstLine=0
@@ -25,5 +25,10 @@ File3\FileName=basic_cs.tex
 File3\FirstLine=0
 File3\FoldedLines=
 File3\Line=9
+File4\Col=0
+File4\FileName=../presentasjon/facerecog_cs_beamer.tex
+File4\FirstLine=0
+File4\FoldedLines=
+File4\Line=0
 FileVersion=1
 MasterFile=
